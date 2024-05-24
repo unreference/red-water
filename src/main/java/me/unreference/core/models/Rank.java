@@ -24,6 +24,7 @@ public enum Rank {
     private final NamedTextColor RANK_PREFIX_COLOR;
     private final NamedTextColor RANK_NAME_COLOR;
     private final Rank RANK_PARENT;
+
     private final Map<String, RankPermission> RANK_PERMISSIONS_GRANTED;
     private final Set<String> RANK_PERMISSIONS_REVOKED;
 
@@ -73,29 +74,50 @@ public enum Rank {
 
     public void grantPermission(String permission, boolean isInheritable) {
         RANK_PERMISSIONS_GRANTED.put(permission, new RankPermission(isInheritable));
-        RANK_PERMISSIONS_REVOKED.remove(permission);
-
+        synchronizePermissions(permission);
     }
 
     public void revokePermission(String permission) {
         RANK_PERMISSIONS_GRANTED.remove(permission);
         RANK_PERMISSIONS_REVOKED.add(permission);
+        synchronizePermissions(permission);
     }
 
     public boolean isPermitted(String permission) {
+        // Check if the permission is explicitly revoked for this rank
         if (RANK_PERMISSIONS_REVOKED.contains(permission)) {
             return false;
         }
 
+        // Check if the permission is explicitly granted for this rank
         RankPermission rankPermission = RANK_PERMISSIONS_GRANTED.get(permission);
         if (rankPermission != null) {
-            return rankPermission.isInheritable() && RANK_PARENT != null && !RANK_PARENT.isPermitted(permission);
+            return true; // Explicitly granted permission
         }
 
-        if (RANK_PARENT != null) {
-            return RANK_PARENT.isPermitted(permission);
+        // Check if the permission is inheritable from parent ranks
+        if (RANK_PARENT != null && RANK_PARENT.isPermitted(permission)) {
+            RankPermission parentRankPermission = RANK_PARENT.RANK_PERMISSIONS_GRANTED.get(permission);
+            if (parentRankPermission != null && parentRankPermission.isInheritable()) {
+                // Inherit permission from parent rank
+                RANK_PERMISSIONS_GRANTED.put(permission, parentRankPermission);
+                return true;
+            }
         }
 
+        // Permission not explicitly granted or inheritable from parent rank
         return false;
+    }
+
+    private void synchronizePermissions(String permission) {
+        if (RANK_PARENT != null) {
+            if (RANK_PARENT.isPermitted(permission)) {
+                if (!RANK_PERMISSIONS_GRANTED.containsKey(permission)) {
+                    RANK_PERMISSIONS_GRANTED.put(permission, new RankPermission(true));
+                } else {
+                    RANK_PERMISSIONS_GRANTED.remove(permission);
+                }
+            }
+        }
     }
 }

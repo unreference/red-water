@@ -1,13 +1,14 @@
 package me.unreference.core.models;
 
 public class RankPermission {
-    private final boolean IS_INHERITABLE;
+    private final boolean RANK_PERMISSION_IS_INHERITABLE;
 
     public RankPermission(boolean isInheritable) {
-        this.IS_INHERITABLE = isInheritable;
+        this.RANK_PERMISSION_IS_INHERITABLE = isInheritable;
     }
 
     public boolean isInheritable() {
-        return IS_INHERITABLE;
+        return RANK_PERMISSION_IS_INHERITABLE;
     }
+
 }

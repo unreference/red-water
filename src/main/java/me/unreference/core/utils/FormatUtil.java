@@ -34,7 +34,7 @@ public class FormatUtil {
         }
 
         TextComponent.Builder builder = Component.text();
-        formatComponent(component, builder);
+        formatHexComponent(component, builder);
         return builder.build();
     }
 
