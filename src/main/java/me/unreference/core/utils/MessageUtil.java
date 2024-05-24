@@ -6,7 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MessageUtil {
 
-    public static Component prefixedMessage(String prefix, String message, Object... args) {
+    public static Component getPrefixedMessage(String prefix, String message, Object... args) {
         Component bodyPrefix = FormatUtil.getFormattedComponent(prefix, args).append(Component.text("> "));
         Component body = FormatUtil.getFormattedComponent(message, args);
         TextComponent.Builder builder = Component.text();

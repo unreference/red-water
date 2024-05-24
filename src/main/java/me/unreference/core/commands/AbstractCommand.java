@@ -62,10 +62,6 @@ public abstract class AbstractCommand extends Command implements me.unreference.
         return COMMAND_ALIASES;
     }
 
-    protected abstract void sendUsageMessage(CommandSender sender);
-
-    protected abstract void generatePermissions();
-
     protected String getAliasUsed() {
         return aliasUsed;
     }
@@ -83,4 +79,8 @@ public abstract class AbstractCommand extends Command implements me.unreference.
     public void setMainAliasUsed(String alias) {
         mainAliasUsed = alias;
     }
+
+    protected abstract void sendUsageMessage(CommandSender sender);
+
+    protected abstract void generatePermissions();
 }

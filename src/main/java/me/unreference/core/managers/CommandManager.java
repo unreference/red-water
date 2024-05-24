@@ -1,5 +1,6 @@
 package me.unreference.core.managers;
 
+import me.unreference.core.commands.RankCommand;
 import me.unreference.core.models.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -18,6 +19,8 @@ public class CommandManager implements Listener {
 
     public CommandManager() {
         Rank.ADMIN.grantPermission(BYPASS_BLOCKED_COMMANDS, true);
+
+        addCommand(new RankCommand());
     }
 
     @EventHandler

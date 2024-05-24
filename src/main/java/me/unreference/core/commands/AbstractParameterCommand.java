@@ -32,7 +32,7 @@ public abstract class AbstractParameterCommand extends AbstractCommand {
                 if (subcommand != null) {
                     subcommand.setAliasUsed(action);
                     subcommand.setMainAliasUsed(getAliasUsed());
-                    subcommand.trigger(sender, Arrays.copyOfRange(args, 0, args.length - 1));
+                    subcommand.trigger(sender, Arrays.copyOfRange(args, 0, args.length));
                     return;
                 }
             }
@@ -45,7 +45,7 @@ public abstract class AbstractParameterCommand extends AbstractCommand {
                 if (subcommand != null) {
                     subcommand.setAliasUsed(action);
                     subcommand.setMainAliasUsed(getAliasUsed());
-                    subcommand.trigger(sender, Arrays.copyOfRange(args, 1, args.length));
+                    subcommand.trigger(sender, Arrays.copyOfRange(args, 0, args.length));
                     return;
                 }
             }
@@ -68,7 +68,7 @@ public abstract class AbstractParameterCommand extends AbstractCommand {
                     return suggestions;
                 }
 
-                return Collections.emptyList();
+                return List.of();
 
             } else if (args.length == 2) {
                 return new ArrayList<>(SUBCOMMANDS.keySet());
@@ -89,16 +89,7 @@ public abstract class AbstractParameterCommand extends AbstractCommand {
             }
         }
 
-        return Collections.emptyList();
-    }
-
-    protected abstract void execute(CommandSender sender, String[] args);
-
-    protected void addSubcommand(Command subcommand) {
-        SUBCOMMANDS.put(subcommand.getName().toLowerCase(), subcommand);
-        for (String alias : subcommand.getAliases()) {
-            SUBCOMMANDS.put(alias.toLowerCase(), subcommand);
-        }
+        return List.of();
     }
 
     @Override
@@ -107,5 +98,19 @@ public abstract class AbstractParameterCommand extends AbstractCommand {
         trigger(sender, args);
         return true;
     }
+
+    @Override
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+        return tab(sender, alias, args);
+    }
+
+    protected void addSubcommand(Command subcommand) {
+        SUBCOMMANDS.put(subcommand.getName().toLowerCase(), subcommand);
+        for (String alias : subcommand.getAliases()) {
+            SUBCOMMANDS.put(alias.toLowerCase(), subcommand);
+        }
+    }
+
+    protected abstract void execute(CommandSender sender, String[] args);
 }
 
