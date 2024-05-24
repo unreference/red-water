@@ -17,9 +17,6 @@ public class RankResetCommand extends AbstractCommand {
 
     @Override
     public void trigger(CommandSender sender, String[] args) {
-        sender.sendMessage(args);
-        sender.sendMessage("" + args.length);
-
         if (args.length != 2) {
             sendUsageMessage(sender);
             return;

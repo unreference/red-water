@@ -59,8 +59,7 @@ public enum Rank {
 
         return Component.text().append(
                         Component.text(RANK_DISPLAY_NAME.toUpperCase() + " ", RANK_PREFIX_COLOR)
-                                .decorate(TextDecoration.BOLD),
-                        Component.text("", RANK_NAME_COLOR))
+                                .decorate(TextDecoration.BOLD))
                 .build();
     }
 

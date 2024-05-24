@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class RankSetCommand extends AbstractCommand {
@@ -19,9 +18,6 @@ public class RankSetCommand extends AbstractCommand {
 
     @Override
     public void trigger(CommandSender sender, String[] args) {
-        sender.sendMessage(Arrays.toString(args));
-        sender.sendMessage("" + args.length);
-
         if (args.length != 3) {
             sendUsageMessage(sender);
             return;
