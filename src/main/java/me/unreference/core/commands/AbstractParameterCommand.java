@@ -14,13 +14,16 @@ public abstract class AbstractParameterCommand extends AbstractCommand {
     public AbstractParameterCommand(String name, String prefix, String permission, boolean isPlayerRequired, String... aliases) {
         super(name, prefix, permission, aliases);
         this.IS_PLAYER_REQUIRED = isPlayerRequired;
+
+        generatePermissions();
     }
 
     public AbstractParameterCommand(String name, String prefix, String permission, String... aliases) {
         super(name, prefix, permission, aliases);
         this.IS_PLAYER_REQUIRED = false;
-    }
 
+        generatePermissions();
+    }
 
     @Override
     public void trigger(CommandSender sender, String[] args) {
@@ -56,22 +59,24 @@ public abstract class AbstractParameterCommand extends AbstractCommand {
 
     @Override
     public List<String> tab(CommandSender sender, String alias, String[] args) {
+        List<String> suggestions = new ArrayList<>();
+
         if (IS_PLAYER_REQUIRED) {
             if (args.length == 1) {
-                List<String> suggestions = new ArrayList<>();
-                Player player = Bukkit.getPlayer(args[0]);
-                if (player != null) {
-                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                        suggestions.add(onlinePlayer.getName());
-                    }
-
-                    return suggestions;
+                String currentArg = args[0];
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    suggestions.add(onlinePlayer.getName());
                 }
 
-                return List.of();
+                suggestions.removeIf(suggestion -> !suggestion.toLowerCase().startsWith(currentArg.toLowerCase()));
+                return suggestions;
 
             } else if (args.length == 2) {
-                return new ArrayList<>(SUBCOMMANDS.keySet());
+                suggestions.addAll(SUBCOMMANDS.keySet());
+                String currentArg = args[1];
+                suggestions.removeIf(suggestion -> !suggestion.toLowerCase().startsWith(currentArg.toLowerCase()));
+                return suggestions;
+
             } else if (args.length > 2) {
                 Command subcommand = SUBCOMMANDS.get(args[1].toLowerCase());
                 if (subcommand != null) {
@@ -80,7 +85,11 @@ public abstract class AbstractParameterCommand extends AbstractCommand {
             }
         } else {
             if (args.length == 1) {
-                return new ArrayList<>(SUBCOMMANDS.keySet());
+                suggestions.addAll(SUBCOMMANDS.keySet());
+                String currentArg = args[0];
+                suggestions.removeIf(suggestion -> !suggestion.toLowerCase().startsWith(currentArg.toLowerCase()));
+                return suggestions;
+
             } else if (args.length > 1) {
                 Command subcommand = SUBCOMMANDS.get(args[0].toLowerCase());
                 if (subcommand != null) {

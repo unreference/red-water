@@ -12,7 +12,7 @@ import java.util.List;
 public class RankResetCommand extends AbstractCommand {
 
     public RankResetCommand() {
-        super("reset", "Rank", "command.rank.reset", "clear");
+        super("reset", "Rank", null, "clear");
     }
 
     @Override
@@ -62,6 +62,6 @@ public class RankResetCommand extends AbstractCommand {
 
     @Override
     protected void generatePermissions() {
-        Rank.ADMIN.grantPermission(getPermission(), true);
+        Rank.LT.grantPermission(getPermission(), true);
     }
 }

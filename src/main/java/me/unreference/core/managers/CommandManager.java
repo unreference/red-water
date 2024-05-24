@@ -56,18 +56,26 @@ public class CommandManager implements Listener {
         CommandMap commandMap = Bukkit.getCommandMap();
 
         Collection<String> allowedCommands = new HashSet<>();
+        boolean hasBypassPermission = rank.isPermitted(BYPASS_BLOCKED_COMMANDS);
+
         for (Command command : commandMap.getKnownCommands().values()) {
             String commandName = command.getName();
-            if (player.isOp() ||
-                    rank.isPermitted(BYPASS_BLOCKED_COMMANDS) ||
-                    rank.isPermitted("command." + commandName)) {
+            String commandPermission = command.getPermission();
+
+            // Allow command if player is an operator or if they have specific command permission
+            if (player.isOp() || rank.isPermitted("command." + commandName)) {
+                allowedCommands.add(commandName);
+            }
+            // Allow internal commands if player has bypass permission
+            else if (hasBypassPermission && (commandPermission == null || !commandPermission.startsWith("command."))) {
                 allowedCommands.add(commandName);
             }
 
+            // Check aliases
             for (String alias : command.getAliases()) {
-                if (player.isOp() ||
-                        rank.isPermitted(BYPASS_BLOCKED_COMMANDS) ||
-                        rank.isPermitted("command." + commandName)) {
+                if (player.isOp() || rank.isPermitted("command." + commandName)) {
+                    allowedCommands.add(alias);
+                } else if (hasBypassPermission && (commandPermission == null || !commandPermission.startsWith("command."))) {
                     allowedCommands.add(alias);
                 }
             }
