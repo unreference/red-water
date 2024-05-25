@@ -13,7 +13,7 @@ import java.util.List;
 public class RankSetCommand extends AbstractCommand {
 
     public RankSetCommand() {
-        super("set", "Rank", null, "update");
+        super("set", "Rank>", null, "update");
     }
 
     @Override
@@ -78,6 +78,5 @@ public class RankSetCommand extends AbstractCommand {
 
     @Override
     protected void generatePermissions() {
-        Rank.LT.grantPermission(getPermission(), true);
     }
 }

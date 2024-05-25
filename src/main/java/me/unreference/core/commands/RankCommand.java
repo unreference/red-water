@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 public class RankCommand extends AbstractParameterCommand {
 
     public RankCommand() {
-        super("rank", "Rank", "command.rank", true);
+        super("rank", "Rank>", "command.rank", true);
 
         addSubcommand(new RankSetCommand());
         addSubcommand(new RankResetCommand());
