@@ -1,17 +1,16 @@
 package me.unreference.core.managers;
 
 import com.destroystokyo.paper.utils.PaperPluginLogger;
+import me.unreference.core.events.RankChangeEvent;
 import me.unreference.core.events.ServerTickEvent;
 import me.unreference.core.models.Rank;
 import me.unreference.core.models.Scoreboard;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
@@ -28,6 +27,11 @@ public class ScoreboardManager implements Listener {
         if (event.getTicks() % 1200 == 0) {
             update();
         }
+    }
+
+    @EventHandler
+    private static void onRankChange(RankChangeEvent event) {
+        update();
     }
 
     @EventHandler
@@ -75,10 +79,6 @@ public class ScoreboardManager implements Listener {
                 team.prefix(rank.getDisplay());
                 team.color(rank.getNameColor());
             }
-        }
-
-        if (scoreboard.getHandle().getObjective("rank") == null) {
-            Objective objective = scoreboard.getHandle().registerNewObjective("rank", "dummy", Component.text(""));
         }
     }
 
