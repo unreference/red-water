@@ -1,7 +1,9 @@
 package me.unreference.core.managers;
 
 import com.destroystokyo.paper.utils.PaperPluginLogger;
+import me.unreference.core.events.RankChangeEvent;
 import me.unreference.core.models.Rank;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -44,6 +46,7 @@ public class RankManager {
 
         RANK_PLAYER_CONFIG.set(playerId, groupId);
         savePlayerDataConfig();
+        Bukkit.getServer().getPluginManager().callEvent(new RankChangeEvent(player, newRank));
     }
 
     public Rank getRankFromId(String id) {
