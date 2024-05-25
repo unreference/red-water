@@ -1,6 +1,5 @@
 package me.unreference.core.managers;
 
-import com.destroystokyo.paper.utils.PaperPluginLogger;
 import me.unreference.core.events.RankChangeEvent;
 import me.unreference.core.events.ServerTickEvent;
 import me.unreference.core.models.Rank;
@@ -75,7 +74,6 @@ public class ScoreboardManager implements Listener {
             String teamName = index + rank.name();
             if (scoreboard.getHandle().getTeam(teamName) == null) {
                 Team team = scoreboard.getHandle().registerNewTeam(teamName);
-                PaperPluginLogger.getAnonymousLogger().info("Created new team: " + team.getName());
                 team.prefix(rank.getDisplay());
                 team.color(rank.getNameColor());
             }

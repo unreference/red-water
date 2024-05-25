@@ -1,5 +1,6 @@
 package me.unreference.core.managers;
 
+import me.unreference.core.Core;
 import me.unreference.core.commands.RankCommand;
 import me.unreference.core.models.Rank;
 import org.bukkit.Bukkit;
@@ -64,11 +65,17 @@ public class CommandManager implements Listener {
 
             // Allow command if player is an operator or if they have specific command permission
             if (player.isOp() || rank.isPermitted("command." + commandName)) {
-                allowedCommands.add(commandName);
+                if (commandPermission != null) {
+                    player.addAttachment(Core.getPlugin(), commandPermission, true);
+                    allowedCommands.add(commandName);
+                }
             }
             // Allow internal commands if player has bypass permission
             else if (hasBypassPermission && (commandPermission == null || !commandPermission.startsWith("command."))) {
-                allowedCommands.add(commandName);
+                if (commandPermission != null) {
+                    player.addAttachment(Core.getPlugin(), commandPermission, true);
+                    allowedCommands.add(commandName);
+                }
             }
 
             // Check aliases
@@ -76,7 +83,10 @@ public class CommandManager implements Listener {
                 if (player.isOp() || rank.isPermitted("command." + commandName)) {
                     allowedCommands.add(alias);
                 } else if (hasBypassPermission && (commandPermission == null || !commandPermission.startsWith("command."))) {
-                    allowedCommands.add(alias);
+                    if (commandPermission != null) {
+                        player.addAttachment(Core.getPlugin(), commandPermission, true);
+                        allowedCommands.add(alias);
+                    }
                 }
             }
         }

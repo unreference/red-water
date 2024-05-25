@@ -16,7 +16,8 @@ public enum Rank {
     MOD("mod", "Mod", NamedTextColor.GOLD, NamedTextColor.YELLOW, TRAINEE),
     SM("sm", "Sr.Mod", NamedTextColor.GOLD, NamedTextColor.YELLOW, MOD),
     ADMIN("admin", "Admin", NamedTextColor.DARK_RED, NamedTextColor.YELLOW, SM),
-    LT("lt", "Leader", NamedTextColor.DARK_RED, NamedTextColor.YELLOW, ADMIN),
+    DEV("dev", "Dev", NamedTextColor.DARK_RED, NamedTextColor.YELLOW, ADMIN),
+    LT("lt", "Leader", NamedTextColor.DARK_RED, NamedTextColor.YELLOW, DEV),
     OWNER("owner", "Owner", NamedTextColor.DARK_RED, NamedTextColor.YELLOW, LT);
 
     private final String RANK_ID;

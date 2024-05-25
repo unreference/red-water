@@ -7,9 +7,14 @@ import me.unreference.core.managers.PlayerManager;
 import me.unreference.core.managers.ScoreboardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Core extends JavaPlugin {
+
+    public static Plugin getPlugin() {
+        return Bukkit.getPluginManager().getPlugin("Core");
+    }
 
     @Override
     public void onEnable() {
