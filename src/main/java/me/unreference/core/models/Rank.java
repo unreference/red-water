@@ -11,8 +11,13 @@ import java.util.Set;
 
 public enum Rank {
     PLAYER("player", null, NamedTextColor.YELLOW),
+    ULTRA("ultra", "&b&lULTRA", NamedTextColor.YELLOW, PLAYER),
+    HERO("hero", "&d&lHERO", NamedTextColor.YELLOW, ULTRA),
+    LEGEND("legend", "&a&lLEGEND", NamedTextColor.YELLOW, HERO),
+    TITAN("titan", "&c&lTITAN", NamedTextColor.YELLOW, LEGEND),
+    ETERNAL("eternal", "&3&lETERNAL", NamedTextColor.YELLOW, TITAN),
 
-    TRAINEE("trainee", "&6&lTRAINEE", NamedTextColor.YELLOW, PLAYER),
+    TRAINEE("trainee", "&9&lTRAINEE", NamedTextColor.YELLOW, ETERNAL),
     MOD("mod", "&6&lMOD", NamedTextColor.YELLOW, TRAINEE),
     SM("sm", "&6&lSR.MOD", NamedTextColor.YELLOW, MOD),
     ADMIN("admin", "&4&lADMIN", NamedTextColor.YELLOW, SM),

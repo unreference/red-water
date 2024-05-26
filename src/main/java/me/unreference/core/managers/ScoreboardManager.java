@@ -50,6 +50,7 @@ public class ScoreboardManager implements Listener {
         setup(scoreboard);
         addPlayerToScoreboard(player, scoreboard);
         player.setScoreboard(scoreboard.getHandle());
+        updatePlayerScoreboard(player, scoreboard);
 
         RankManager rankManager = RankManager.getInstance();
         Rank rank = rankManager.getPlayerRank(player);
@@ -77,10 +78,8 @@ public class ScoreboardManager implements Listener {
     private static void setup(Scoreboard scoreboard) {
         Rank[] invertedRanks = getInvertedRankValues();
         for (Rank rank : invertedRanks) {
-            int index = getInvertedRankIndex(rank);
-            String teamName = index + rank.name();
-            if (scoreboard.getHandle().getTeam(teamName) == null) {
-                Team team = scoreboard.getHandle().registerNewTeam(teamName);
+            if (scoreboard.getHandle().getTeam(getPaddedRankName(rank)) == null) {
+                Team team = scoreboard.getHandle().registerNewTeam(getPaddedRankName(rank));
                 team.prefix(rank.getPrefixFormatting());
                 team.color(rank.getPlayerNameColor());
             }
@@ -99,7 +98,7 @@ public class ScoreboardManager implements Listener {
 
     private static int getInvertedRankIndex(Rank rank) {
         Rank[] invertedRanks = getInvertedRankValues();
-        for (int i = 0; i < invertedRanks.length; i++) {
+        for (int i = 0; i < invertedRanks.length; ++i) {
             if (invertedRanks[i] == rank) {
                 return i;
             }
@@ -119,6 +118,31 @@ public class ScoreboardManager implements Listener {
         }
     }
 
+    private static void updatePlayerScoreboard(Player player, Scoreboard scoreboard) {
+        RankManager rankManager = RankManager.getInstance();
+        Rank currentRank = rankManager.getPlayerRank(player);
+        UUID playerId = player.getUniqueId();
+
+        Rank previousRank = SCOREBOARD_RANKS.get(playerId);
+        if (previousRank != currentRank) {
+            if (previousRank != null) {
+                String previousTeamName = getPaddedRankName(previousRank);
+                Team previousTeam = scoreboard.getHandle().getTeam(previousTeamName);
+                if (previousTeam != null) {
+                    previousTeam.removeEntry(player.getName());
+                }
+            }
+        }
+
+        String currentTeamName = getPaddedRankName(currentRank);
+        Team currentTeam = scoreboard.getHandle().getTeam(currentTeamName);
+        if (currentTeam != null) {
+            currentTeam.addEntry(player.getName());
+        }
+
+        SCOREBOARD_RANKS.put(playerId, currentRank);
+    }
+
     private static void reset() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             UUID playerId = player.getUniqueId();
@@ -129,37 +153,11 @@ public class ScoreboardManager implements Listener {
         }
     }
 
-    private static void updatePlayerScoreboard(Player player, Scoreboard scoreboard) {
-        RankManager rankManager = RankManager.getInstance();
-        Rank currentRank = rankManager.getPlayerRank(player);
-        UUID playerId = player.getUniqueId();
-
-        Rank previousRank = SCOREBOARD_RANKS.get(playerId);
-        if (previousRank != currentRank) {
-            if (previousRank != null) {
-                String previousTeamName = getInvertedRankValues()[getInvertedRankIndex(previousRank)].name();
-                Team previousTeam = scoreboard.getHandle().getTeam(previousTeamName);
-                if (previousTeam != null) {
-                    previousTeam.removeEntry(player.getName());
-                }
-            }
-        }
-
-        String currentTeamName = getInvertedRankIndex(currentRank) + currentRank.name();
-        Team currentTeam = scoreboard.getHandle().getTeam(currentTeamName);
-        if (currentTeam != null) {
-            currentTeam.addEntry(player.getName());
-        }
-
-        SCOREBOARD_RANKS.put(playerId, currentRank);
-    }
-
     private static void addPlayerToScoreboard(Player player, Scoreboard scoreboard) {
         RankManager rankManager = RankManager.getInstance();
         Rank rank = rankManager.getPlayerRank(player);
-        String teamName = getInvertedRankIndex(rank) + rank.name();
 
-        Team team = scoreboard.getHandle().getTeam(teamName);
+        Team team = scoreboard.getHandle().getTeam(getPaddedRankName(rank));
         if (team != null) {
             team.addEntry(player.getName());
         }
@@ -168,12 +166,19 @@ public class ScoreboardManager implements Listener {
     private static void removePlayerFromScoreboard(Player player, Scoreboard scoreboard) {
         RankManager rankManager = RankManager.getInstance();
         Rank rank = rankManager.getPlayerRank(player);
-        Rank[] invertedRanks = getInvertedRankValues();
-        String teamName = invertedRanks[getInvertedRankIndex(rank)].name();
 
-        Team team = scoreboard.getHandle().getTeam(teamName);
+        Team team = scoreboard.getHandle().getTeam(getPaddedRankName(rank));
         if (team != null) {
             team.removeEntry(player.getName());
         }
+    }
+
+    private static String getPaddedRankName(Rank rank) {
+        Rank[] invertedRanks = getInvertedRankValues();
+        int index = getInvertedRankIndex(rank);
+        int maxDigits = String.valueOf(invertedRanks.length - 1).length();
+        String paddedIndex = String.format("%0" + maxDigits + "d", index);
+
+        return paddedIndex + rank.name();
     }
 }
