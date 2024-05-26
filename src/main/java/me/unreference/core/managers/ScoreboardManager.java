@@ -74,8 +74,8 @@ public class ScoreboardManager implements Listener {
             String teamName = index + rank.name();
             if (scoreboard.getHandle().getTeam(teamName) == null) {
                 Team team = scoreboard.getHandle().registerNewTeam(teamName);
-                team.prefix(rank.getDisplay());
-                team.color(rank.getNameColor());
+                team.prefix(rank.getPrefixFormatting());
+                team.color(rank.getPlayerNameColor());
             }
         }
     }

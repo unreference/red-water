@@ -29,8 +29,8 @@ public class ChatManager implements Listener {
         Component formattedMessage = formatMessage(event.message(), rank);
 
         Component finalMessage = Component.text()
-                .append(rank.getDisplay())
-                .append(Component.text(player.getName(), rank.getNameColor()))
+                .append(rank.getPrefixFormatting())
+                .append(Component.text(player.getName(), rank.getPlayerNameColor()))
                 .append(Component.text(" "))
                 .append(formattedMessage)
                 .build();
