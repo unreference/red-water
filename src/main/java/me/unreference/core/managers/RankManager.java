@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class RankManager {
     private static RankManager instance;
@@ -27,6 +28,16 @@ public class RankManager {
         }
 
         return instance;
+    }
+
+    public static Rank getRankFromId(String id) {
+        for (Rank group : Rank.values()) {
+            if (group.getId().equalsIgnoreCase(id)) {
+                return group;
+            }
+        }
+
+        return null;
     }
 
     public Rank getPlayerRank(Player player) {
@@ -49,22 +60,12 @@ public class RankManager {
         Bukkit.getServer().getPluginManager().callEvent(new RankChangeEvent(player, newRank));
     }
 
-    public Rank getRankFromId(String id) {
-        for (Rank group : Rank.values()) {
-            if (group.getId().equalsIgnoreCase(id)) {
-                return group;
-            }
-        }
-
-        return null;
-    }
-
     private void savePlayerDataConfig() {
         try {
             RANK_PLAYER_CONFIG.save(RANK_PLAYER_FILE);
         } catch (IOException e) {
             PaperPluginLogger.getAnonymousLogger().severe("Error saving player data configuration: " + e.getMessage());
-            e.printStackTrace();
+            PaperPluginLogger.getAnonymousLogger().severe(Arrays.toString(e.getStackTrace()));
         }
     }
 }

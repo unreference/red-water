@@ -26,11 +26,11 @@ public class ChatManager implements Listener {
         RankManager rankManager = RankManager.getInstance();
         Rank rank = rankManager.getPlayerRank(player);
 
-        Component formattedMessage = formatMessage(event.message(), rank);
+        Component formattedMessage = getFormattedMessage(event.message(), rank);
 
         Component finalMessage = Component.text()
                 .append(rank.getPrefixFormatting())
-                .append(Component.text(player.getName(), rank.getPlayerNameColor()))
+                .append(player.displayName().colorIfAbsent(rank.getPlayerNameColor()))
                 .append(Component.text(" "))
                 .append(formattedMessage)
                 .build();
@@ -38,7 +38,7 @@ public class ChatManager implements Listener {
         Bukkit.broadcast(finalMessage);
     }
 
-    private static Component formatMessage(Component message, Rank rank) {
+    private static Component getFormattedMessage(Component message, Rank rank) {
         boolean isLegacy = rank.isPermitted(PERMISSION_CHAT_FORMAT_LEGACY);
         boolean isHex = rank.isPermitted(PERMISSION_CHAT_FORMAT_HEX);
 

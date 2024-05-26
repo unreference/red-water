@@ -25,7 +25,8 @@ public class CommandManager implements Listener {
     private static final Map<Player, PermissionAttachment> PERMISSION_ATTACHMENTS = new HashMap<>();
 
     public CommandManager() {
-        Rank.ADMIN.grantPermission(PERMISSION_BYPASS_BLOCKED_COMMANDS, true);
+        Rank.DEV.grantPermission(PERMISSION_BYPASS_BLOCKED_COMMANDS, true);
+
         addCommand(new RankCommand());
     }
 
@@ -72,7 +73,7 @@ public class CommandManager implements Listener {
 
         if (RankManager.getInstance().getPlayerRank(player).isPermitted(PERMISSION_BYPASS_BLOCKED_COMMANDS)) {
             for (String command : getBlockedCommands()) {
-                String permission = determinePermissionNode(command);
+                String permission = getPermission(command);
                 attachment.setPermission(permission, true);
             }
         }
@@ -83,6 +84,19 @@ public class CommandManager implements Listener {
         if (attachment != null) {
             attachment.remove();
         }
+    }
+
+    private static Collection<String> getBlockedCommands() {
+        CommandMap commandMap = Bukkit.getCommandMap();
+        Collection<String> bypassableCommands = new HashSet<>();
+
+        for (Command command : commandMap.getKnownCommands().values()) {
+            String commandPermission = command.getPermission();
+            if (isInternalCommand(commandPermission)) {
+                bypassableCommands.add(command.getName());
+            }
+        }
+        return bypassableCommands;
     }
 
     private static Collection<String> getAllowedCommands(Player player) {
@@ -98,19 +112,19 @@ public class CommandManager implements Listener {
             String commandPermission = command.getPermission();
 
             // Allow command if player is an operator or if they have specific command permission
-            if (player.isOp() || rank.isPermitted(determinePermissionNode(commandName))) {
+            if (player.isOp() || rank.isPermitted(getPermission(commandName))) {
                 allowedCommands.add(commandName);
             }
             // Allow Bukkit and Minecraft commands if player has bypass permission
-            else if (hasBypassPermission && isBukkitOrMinecraftCommand(commandPermission)) {
+            else if (hasBypassPermission && isInternalCommand(commandPermission)) {
                 allowedCommands.add(commandName);
             }
 
             // Check aliases
             for (String alias : command.getAliases()) {
-                if (player.isOp() || rank.isPermitted(determinePermissionNode(alias))) {
+                if (player.isOp() || rank.isPermitted(getPermission(alias))) {
                     allowedCommands.add(alias);
-                } else if (hasBypassPermission && isBukkitOrMinecraftCommand(commandPermission)) {
+                } else if (hasBypassPermission && isInternalCommand(commandPermission)) {
                     allowedCommands.add(alias);
                 }
             }
@@ -119,24 +133,7 @@ public class CommandManager implements Listener {
         return allowedCommands;
     }
 
-    private static boolean isBukkitOrMinecraftCommand(String commandPermission) {
-        return commandPermission != null && (commandPermission.startsWith("bukkit.command.") || commandPermission.startsWith("minecraft.command."));
-    }
-
-    private static Collection<String> getBlockedCommands() {
-        CommandMap commandMap = Bukkit.getCommandMap();
-        Collection<String> bypassableCommands = new HashSet<>();
-
-        for (Command command : commandMap.getKnownCommands().values()) {
-            String commandPermission = command.getPermission();
-            if (isBukkitOrMinecraftCommand(commandPermission)) {
-                bypassableCommands.add(command.getName());
-            }
-        }
-        return bypassableCommands;
-    }
-
-    private static String determinePermissionNode(String commandName) {
+    private static String getPermission(String commandName) {
         CommandMap commandMap = Bukkit.getCommandMap();
         Command command = commandMap.getCommand(commandName);
         if (command != null && command.getPermission() != null) {
@@ -144,6 +141,10 @@ public class CommandManager implements Listener {
         }
 
         return "command." + commandName;
+    }
+
+    private static boolean isInternalCommand(String commandPermission) {
+        return commandPermission != null && (commandPermission.startsWith("bukkit.command.") || commandPermission.startsWith("minecraft.command."));
     }
 
     private static void addCommand(Command command) {
