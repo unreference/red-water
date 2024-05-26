@@ -1,5 +1,6 @@
 package me.unreference.core.commands;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -80,7 +81,7 @@ public abstract class AbstractCommand extends Command implements me.unreference.
         mainAliasUsed = alias;
     }
 
-    protected abstract void sendUsageMessage(CommandSender sender);
+    protected abstract Component getUsageMessage();
 
     protected abstract void generatePermissions();
 }

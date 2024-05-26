@@ -3,6 +3,7 @@ package me.unreference.core.commands;
 import me.unreference.core.managers.RankManager;
 import me.unreference.core.models.Rank;
 import me.unreference.core.utils.MessageUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ public class RankSetCommand extends AbstractCommand {
     @Override
     public void trigger(CommandSender sender, String[] args) {
         if (args.length != 3) {
-            sendUsageMessage(sender);
+            sender.sendMessage(getUsageMessage());
             return;
         }
 
@@ -70,10 +71,10 @@ public class RankSetCommand extends AbstractCommand {
     }
 
     @Override
-    protected void sendUsageMessage(CommandSender sender) {
-        sender.sendMessage(MessageUtil.getPrefixedMessage(
+    protected Component getUsageMessage() {
+        return MessageUtil.getPrefixedMessage(
                 getPrefix(),
-                "/%s <player> %s <rank>", getMainAliasUsed(), getAliasUsed()));
+                "/%s <player> %s <rank>", getMainAliasUsed(), getAliasUsed());
     }
 
     @Override

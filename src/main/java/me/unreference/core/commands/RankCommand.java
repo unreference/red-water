@@ -2,9 +2,10 @@ package me.unreference.core.commands;
 
 import me.unreference.core.models.Rank;
 import me.unreference.core.utils.MessageUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 
-public class RankCommand extends AbstractParameterCommand {
+public class RankCommand extends AbstractParameterizedCommand {
 
     public RankCommand() {
         super("rank", "Rank>", "command.rank", true);
@@ -16,14 +17,15 @@ public class RankCommand extends AbstractParameterCommand {
     @Override
     protected void execute(CommandSender sender, String[] args) {
         if (args.length != 2) {
-            sendUsageMessage(sender);
+            sender.sendMessage(getUsageMessage());
         }
     }
 
     @Override
-    protected void sendUsageMessage(CommandSender sender) {
-        sender.sendMessage(MessageUtil.getPrefixedMessage(
-                getPrefix(), "/%s <player> (set|reset) [<rank>]", getAliasUsed()));
+    protected Component getUsageMessage() {
+        return MessageUtil.getPrefixedMessage(
+                getPrefix(),
+                "/%s <player> (set|reset) [<rank>]", getAliasUsed());
     }
 
     @Override

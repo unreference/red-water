@@ -7,18 +7,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public abstract class AbstractParameterCommand extends AbstractCommand {
+public abstract class AbstractParameterizedCommand extends AbstractCommand {
     private final Map<String, Command> SUBCOMMANDS = new HashMap<>();
     private final boolean IS_PLAYER_REQUIRED;
 
-    public AbstractParameterCommand(String name, String prefix, String permission, boolean isPlayerRequired, String... aliases) {
+    public AbstractParameterizedCommand(String name, String prefix, String permission, boolean isPlayerRequired, String... aliases) {
         super(name, prefix, permission, aliases);
         this.IS_PLAYER_REQUIRED = isPlayerRequired;
 
         generatePermissions();
     }
 
-    public AbstractParameterCommand(String name, String prefix, String permission, String... aliases) {
+    public AbstractParameterizedCommand(String name, String prefix, String permission, String... aliases) {
         super(name, prefix, permission, aliases);
         this.IS_PLAYER_REQUIRED = false;
 
