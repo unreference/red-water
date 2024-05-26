@@ -10,6 +10,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
@@ -17,8 +19,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class ScoreboardManager implements Listener {
-    private static final Map<UUID, Scoreboard> PLAYER_SCOREBOARDS = new HashMap<>();
-    private static final Map<UUID, Rank> PLAYER_RANKS = new HashMap<>();
+    private static final Map<UUID, Scoreboard> SCOREBOARD_PLAYERS = new HashMap<>();
+    private static final Map<UUID, Rank> SCOREBOARD_RANKS = new HashMap<>();
 
     @EventHandler
     private static void onServerTick(ServerTickEvent event) {
@@ -38,12 +40,12 @@ public class ScoreboardManager implements Listener {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
 
-        if (PLAYER_SCOREBOARDS.containsKey(playerId)) {
+        if (SCOREBOARD_PLAYERS.containsKey(playerId)) {
             return;
         }
 
         Scoreboard scoreboard = new Scoreboard(player);
-        PLAYER_SCOREBOARDS.put(playerId, scoreboard);
+        SCOREBOARD_PLAYERS.put(playerId, scoreboard);
 
         setup(scoreboard);
         addPlayerToScoreboard(player, scoreboard);
@@ -51,7 +53,7 @@ public class ScoreboardManager implements Listener {
 
         RankManager rankManager = RankManager.getInstance();
         Rank rank = rankManager.getPlayerRank(player);
-        PLAYER_RANKS.put(playerId, rank);
+        SCOREBOARD_RANKS.put(playerId, rank);
     }
 
     @EventHandler
@@ -59,12 +61,17 @@ public class ScoreboardManager implements Listener {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
 
-        if (PLAYER_SCOREBOARDS.containsKey(playerId)) {
-            Scoreboard scoreboard = PLAYER_SCOREBOARDS.get(playerId);
+        if (SCOREBOARD_PLAYERS.containsKey(playerId)) {
+            Scoreboard scoreboard = SCOREBOARD_PLAYERS.get(playerId);
             removePlayerFromScoreboard(player, scoreboard);
-            PLAYER_SCOREBOARDS.remove(playerId);
-            PLAYER_RANKS.remove(playerId);
+            SCOREBOARD_PLAYERS.remove(playerId);
+            SCOREBOARD_RANKS.remove(playerId);
         }
+    }
+
+    @EventHandler
+    private static void onPluginDisable(PluginDisableEvent event) {
+        reset();
     }
 
     private static void setup(Scoreboard scoreboard) {
@@ -104,11 +111,21 @@ public class ScoreboardManager implements Listener {
     private static void update() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             UUID playerId = player.getUniqueId();
-            Scoreboard scoreboard = PLAYER_SCOREBOARDS.get(playerId);
+            Scoreboard scoreboard = SCOREBOARD_PLAYERS.get(playerId);
 
             if (scoreboard != null) {
                 updatePlayerScoreboard(player, scoreboard);
             }
+        }
+    }
+
+    private static void reset() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            UUID playerId = player.getUniqueId();
+            Scoreboard scoreboard = SCOREBOARD_PLAYERS.get(playerId);
+
+            scoreboard.getHandle().getObjectives().forEach(Objective::unregister);
+            scoreboard.getHandle().getTeams().forEach(Team::unregister);
         }
     }
 
@@ -117,7 +134,7 @@ public class ScoreboardManager implements Listener {
         Rank currentRank = rankManager.getPlayerRank(player);
         UUID playerId = player.getUniqueId();
 
-        Rank previousRank = PLAYER_RANKS.get(playerId);
+        Rank previousRank = SCOREBOARD_RANKS.get(playerId);
         if (previousRank != currentRank) {
             if (previousRank != null) {
                 String previousTeamName = getInvertedRankValues()[getInvertedRankIndex(previousRank)].name();
@@ -134,7 +151,7 @@ public class ScoreboardManager implements Listener {
             currentTeam.addEntry(player.getName());
         }
 
-        PLAYER_RANKS.put(playerId, currentRank);
+        SCOREBOARD_RANKS.put(playerId, currentRank);
     }
 
     private static void addPlayerToScoreboard(Player player, Scoreboard scoreboard) {
