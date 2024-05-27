@@ -48,11 +48,11 @@ public class RankSetCommand extends AbstractCommand {
         player.sendMessage(
                 MessageUtil.getPrefixedMessage(
                         getPrefix(),
-                        "Your rank has been updated to &e%s&7.", rank.getId().toUpperCase()));
+                        "Your rank has been updated to &e%s&7.", rank.name()));
         sender.sendMessage(
                 MessageUtil.getPrefixedMessage(
                         getPrefix(),
-                        "Updated &e%s&7's rank to &e%s&7.", player.getName(), rank.getId().toUpperCase()));
+                        "Updated &e%s&7's rank to &e%s&7.", player.getName(), rank.name()));
     }
 
     @Override

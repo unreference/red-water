@@ -30,7 +30,7 @@ public class RankManager {
         return instance;
     }
 
-    public static Rank getRankFromId(String id) {
+    public Rank getRankFromId(String id) {
         for (Rank group : Rank.values()) {
             if (group.getId().equalsIgnoreCase(id)) {
                 return group;

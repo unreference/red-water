@@ -23,7 +23,6 @@ public class RankResetCommand extends AbstractCommand {
             return;
         }
 
-
         Player player = Bukkit.getPlayer(args[0]);
         if (player == null) {
             sender.sendMessage(
