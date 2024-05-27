@@ -6,14 +6,14 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MessageUtil {
 
-    public static Component getPrefixedMessage(String prefix, String message, Object... args) {
-        Component bodyPrefix = FormatUtil.getFormattedComponent(prefix, args);
-        Component body = FormatUtil.getFormattedComponent(message, args);
-        TextComponent.Builder builder = Component.text();
+  public static Component getPrefixedMessage(String prefix, String message, Object... args) {
+    Component bodyPrefix = FormatUtil.getFormattedComponent(prefix, args);
+    Component body = FormatUtil.getFormattedComponent(message, args);
+    TextComponent.Builder builder = Component.text();
 
-        builder.append(bodyPrefix.colorIfAbsent(NamedTextColor.BLUE));
-        builder.appendSpace();
-        builder.append(body.colorIfAbsent(NamedTextColor.GRAY));
-        return builder.build();
-    }
+    builder.append(bodyPrefix.colorIfAbsent(NamedTextColor.BLUE));
+    builder.appendSpace();
+    builder.append(body.colorIfAbsent(NamedTextColor.GRAY));
+    return builder.build();
+  }
 }

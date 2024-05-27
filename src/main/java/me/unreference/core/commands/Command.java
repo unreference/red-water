@@ -6,17 +6,17 @@ import java.util.List;
 
 public interface Command {
 
-    String getName();
+  String getName();
 
-    String getPermission();
+  String getPermission();
 
-    List<String> getAliases();
+  List<String> getAliases();
 
-    void setAliasUsed(String alias);
+  void setAliasUsed(String alias);
 
-    void setMainAliasUsed(String alias);
+  void setMainAliasUsed(String alias);
 
-    void trigger(CommandSender sender, String[] args);
+  void trigger(CommandSender sender, String[] args);
 
-    List<String> tab(CommandSender sender, String alias, String[] args);
+  List<String> tab(CommandSender sender, String alias, String[] args);
 }

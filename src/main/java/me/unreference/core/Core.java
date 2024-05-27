@@ -12,30 +12,30 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Core extends JavaPlugin {
 
-    public static Plugin getPlugin() {
-        return Bukkit.getPluginManager().getPlugin("Core");
-    }
+  public static Plugin getPlugin() {
+    return Bukkit.getPluginManager().getPlugin("Core");
+  }
 
-    @Override
-    public void onEnable() {
+  @Override
+  public void onEnable() {
 
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            Bukkit.getServer().getPluginManager().callEvent(new ServerTickEvent());
-        }, 0L, 1L);
+    Bukkit.getScheduler().runTaskTimer(this, () -> {
+      Bukkit.getServer().getPluginManager().callEvent(new ServerTickEvent());
+    }, 0L, 1L);
 
-        registerManager(new CommandManager());
-        registerManager(new PlayerManager());
-        registerManager(new ChatManager());
-        registerManager(new ScoreboardManager());
+    registerManager(new CommandManager());
+    registerManager(new PlayerManager());
+    registerManager(new ChatManager());
+    registerManager(new ScoreboardManager());
 
-    }
+  }
 
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
+  @Override
+  public void onDisable() {
+    // Plugin shutdown logic
+  }
 
-    private void registerManager(Listener listener) {
-        this.getServer().getPluginManager().registerEvents(listener, this);
-    }
+  private void registerManager(Listener listener) {
+    this.getServer().getPluginManager().registerEvents(listener, this);
+  }
 }

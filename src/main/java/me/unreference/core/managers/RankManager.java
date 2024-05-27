@@ -13,59 +13,59 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class RankManager {
-    private static RankManager instance;
-    private final File RANK_PLAYER_FILE;
-    private final FileConfiguration RANK_PLAYER_CONFIG;
+  private static RankManager instance;
+  private final File RANK_PLAYER_FILE;
+  private final FileConfiguration RANK_PLAYER_CONFIG;
 
-    private RankManager() {
-        this.RANK_PLAYER_FILE = new File("plugins/Core/players.yml");
-        this.RANK_PLAYER_CONFIG = YamlConfiguration.loadConfiguration(RANK_PLAYER_FILE);
+  private RankManager() {
+    this.RANK_PLAYER_FILE = new File("plugins/Core/players.yml");
+    this.RANK_PLAYER_CONFIG = YamlConfiguration.loadConfiguration(RANK_PLAYER_FILE);
+  }
+
+  public static RankManager getInstance() {
+    if (instance == null) {
+      instance = new RankManager();
     }
 
-    public static RankManager getInstance() {
-        if (instance == null) {
-            instance = new RankManager();
-        }
+    return instance;
+  }
 
-        return instance;
+  public Rank getRankFromId(String id) {
+    for (Rank group : Rank.values()) {
+      if (group.getId().equalsIgnoreCase(id)) {
+        return group;
+      }
     }
 
-    public Rank getRankFromId(String id) {
-        for (Rank group : Rank.values()) {
-            if (group.getId().equalsIgnoreCase(id)) {
-                return group;
-            }
-        }
+    return null;
+  }
 
-        return null;
+  public Rank getPlayerRank(Player player) {
+    String playerId = player.getUniqueId().toString();
+    String rankId = RANK_PLAYER_CONFIG.getString(playerId);
+
+    if (rankId != null) {
+      return getRankFromId(rankId);
     }
 
-    public Rank getPlayerRank(Player player) {
-        String playerId = player.getUniqueId().toString();
-        String rankId = RANK_PLAYER_CONFIG.getString(playerId);
+    return null;
+  }
 
-        if (rankId != null) {
-            return getRankFromId(rankId);
-        }
+  public void setPlayerRank(Player player, Rank newRank) {
+    String playerId = player.getUniqueId().toString();
+    String groupId = newRank.getId();
 
-        return null;
+    RANK_PLAYER_CONFIG.set(playerId, groupId);
+    savePlayerDataConfig();
+    Bukkit.getServer().getPluginManager().callEvent(new RankChangeEvent(player, newRank));
+  }
+
+  private void savePlayerDataConfig() {
+    try {
+      RANK_PLAYER_CONFIG.save(RANK_PLAYER_FILE);
+    } catch (IOException e) {
+      PaperPluginLogger.getAnonymousLogger().severe("Error saving player data configuration: " + e.getMessage());
+      PaperPluginLogger.getAnonymousLogger().severe(Arrays.toString(e.getStackTrace()));
     }
-
-    public void setPlayerRank(Player player, Rank newRank) {
-        String playerId = player.getUniqueId().toString();
-        String groupId = newRank.getId();
-
-        RANK_PLAYER_CONFIG.set(playerId, groupId);
-        savePlayerDataConfig();
-        Bukkit.getServer().getPluginManager().callEvent(new RankChangeEvent(player, newRank));
-    }
-
-    private void savePlayerDataConfig() {
-        try {
-            RANK_PLAYER_CONFIG.save(RANK_PLAYER_FILE);
-        } catch (IOException e) {
-            PaperPluginLogger.getAnonymousLogger().severe("Error saving player data configuration: " + e.getMessage());
-            PaperPluginLogger.getAnonymousLogger().severe(Arrays.toString(e.getStackTrace()));
-        }
-    }
+  }
 }
