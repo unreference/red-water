@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 
 import java.util.Collection;
@@ -25,8 +26,7 @@ public class CommandManager implements Listener {
     private static final Map<Player, PermissionAttachment> PERMISSION_ATTACHMENTS = new HashMap<>();
 
     public CommandManager() {
-        Rank.DEV.grantPermission(PERMISSION_BYPASS_BLOCKED_COMMANDS, true);
-
+        Rank.ADMIN.grantPermission(PERMISSION_BYPASS_BLOCKED_COMMANDS, true);
         addCommand(new RankCommand());
     }
 
@@ -71,12 +71,23 @@ public class CommandManager implements Listener {
         PermissionAttachment attachment = player.addAttachment(Core.getPlugin());
         PERMISSION_ATTACHMENTS.put(player, attachment);
 
-        if (RankManager.getInstance().getPlayerRank(player).isPermitted(PERMISSION_BYPASS_BLOCKED_COMMANDS)) {
+        Rank rank = RankManager.getInstance().getPlayerRank(player);
+
+        if (rank.isPermitted(PERMISSION_BYPASS_BLOCKED_COMMANDS)) {
             for (String command : getBlockedCommands()) {
                 String permission = getPermission(command);
                 attachment.setPermission(permission, true);
             }
         }
+
+        // Dynamically grant general permissions based on wildcard patterns
+        for (Permission permission : Bukkit.getPluginManager().getPermissions()) {
+            if (isWildcardMatch(permission.getName())) {
+                attachment.setPermission(permission.getName(), true);
+            }
+        }
+
+        player.recalculatePermissions();
     }
 
     private static void clearPermissions(Player player) {
@@ -96,6 +107,7 @@ public class CommandManager implements Listener {
                 bypassableCommands.add(command.getName());
             }
         }
+
         return bypassableCommands;
     }
 
@@ -145,6 +157,10 @@ public class CommandManager implements Listener {
 
     private static boolean isInternalCommand(String commandPermission) {
         return commandPermission != null && (commandPermission.startsWith("bukkit.command.") || commandPermission.startsWith("minecraft.command."));
+    }
+
+    private static boolean isWildcardMatch(String permission) {
+        return permission.startsWith("bukkit.") || permission.startsWith("minecraft.");
     }
 
     private static void addCommand(Command command) {
