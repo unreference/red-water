@@ -4,6 +4,7 @@ import me.unreference.core.models.Rank;
 import me.unreference.core.utils.MessageUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -18,8 +19,8 @@ public class PlayerManager implements Listener {
                         "&8%s", player.getName()));
     }
 
-    @EventHandler
-    private void onPlayerJoin(PlayerJoinEvent event) {
+    @EventHandler(priority = EventPriority.HIGH)
+    private static void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         RankManager rankManager = RankManager.getInstance();
 
