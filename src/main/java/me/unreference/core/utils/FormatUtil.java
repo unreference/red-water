@@ -8,6 +8,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,6 +81,22 @@ public class FormatUtil {
     TextComponent.Builder builder = Component.text();
     formatHexComponent(message, builder);
     return builder.build();
+  }
+
+  public static String getFormattedTimeFromSeconds(int duration) {
+    long hours = TimeUnit.SECONDS.toHours(duration);
+    long minutes = TimeUnit.SECONDS.toMinutes(duration) % 60;
+    long seconds = TimeUnit.SECONDS.toSeconds(duration) % 60;
+
+    StringBuilder builder = new StringBuilder();
+
+    if (hours > 0) {
+      builder.append(formatUnit(hours)).append(":");
+    }
+
+    builder.append(formatUnit(minutes)).append(":").append(formatUnit(seconds));
+
+    return builder.toString();
   }
 
   private static void formatComponent(Component component, TextComponent.Builder builder) {
@@ -278,58 +295,39 @@ public class FormatUtil {
   }
 
   private static NamedTextColor getColorFromLegacy(char legacyCode) {
-    switch (legacyCode) {
-      case '0':
-        return NamedTextColor.BLACK;
-      case '1':
-        return NamedTextColor.DARK_BLUE;
-      case '2':
-        return NamedTextColor.DARK_GREEN;
-      case '3':
-        return NamedTextColor.DARK_AQUA;
-      case '4':
-        return NamedTextColor.DARK_RED;
-      case '5':
-        return NamedTextColor.DARK_PURPLE;
-      case '6':
-        return NamedTextColor.GOLD;
-      case '7':
-        return NamedTextColor.GRAY;
-      case '8':
-        return NamedTextColor.DARK_GRAY;
-      case '9':
-        return NamedTextColor.BLUE;
-      case 'a':
-        return NamedTextColor.GREEN;
-      case 'b':
-        return NamedTextColor.AQUA;
-      case 'c':
-        return NamedTextColor.RED;
-      case 'd':
-        return NamedTextColor.LIGHT_PURPLE;
-      case 'e':
-        return NamedTextColor.YELLOW;
-      case 'f':
-        return NamedTextColor.WHITE;
-      default:
-        return null;
-    }
+    return switch (legacyCode) {
+      case '0' -> NamedTextColor.BLACK;
+      case '1' -> NamedTextColor.DARK_BLUE;
+      case '2' -> NamedTextColor.DARK_GREEN;
+      case '3' -> NamedTextColor.DARK_AQUA;
+      case '4' -> NamedTextColor.DARK_RED;
+      case '5' -> NamedTextColor.DARK_PURPLE;
+      case '6' -> NamedTextColor.GOLD;
+      case '7' -> NamedTextColor.GRAY;
+      case '8' -> NamedTextColor.DARK_GRAY;
+      case '9' -> NamedTextColor.BLUE;
+      case 'a' -> NamedTextColor.GREEN;
+      case 'b' -> NamedTextColor.AQUA;
+      case 'c' -> NamedTextColor.RED;
+      case 'd' -> NamedTextColor.LIGHT_PURPLE;
+      case 'e' -> NamedTextColor.YELLOW;
+      case 'f' -> NamedTextColor.WHITE;
+      default -> null;
+    };
   }
 
   private static TextDecoration getDecorationFromLegacy(char legacyCode) {
-    switch (legacyCode) {
-      case 'k':
-        return TextDecoration.OBFUSCATED;
-      case 'l':
-        return TextDecoration.BOLD;
-      case 'm':
-        return TextDecoration.STRIKETHROUGH;
-      case 'n':
-        return TextDecoration.UNDERLINED;
-      case 'o':
-        return TextDecoration.ITALIC;
-      default:
-        return null;
-    }
+    return switch (legacyCode) {
+      case 'k' -> TextDecoration.OBFUSCATED;
+      case 'l' -> TextDecoration.BOLD;
+      case 'm' -> TextDecoration.STRIKETHROUGH;
+      case 'n' -> TextDecoration.UNDERLINED;
+      case 'o' -> TextDecoration.ITALIC;
+      default -> null;
+    };
+  }
+
+  private static String formatUnit(long unit) {
+    return unit < 10 ? "0" + unit : String.valueOf(unit);
   }
 }

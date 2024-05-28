@@ -81,7 +81,6 @@ public class ScoreboardManager implements Listener {
       if (scoreboard.getHandle().getTeam(getSortedRankName(rank)) == null) {
         Team team = scoreboard.getHandle().registerNewTeam(getSortedRankName(rank));
         team.prefix(rank.getPrefixFormatting());
-        team.color(rank.getPlayerNameColor());
       }
     }
   }

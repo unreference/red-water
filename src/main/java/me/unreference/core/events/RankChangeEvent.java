@@ -16,12 +16,12 @@ public class RankChangeEvent extends Event {
     this.RANK_CHANGE_NEW_RANK = newRank;
   }
 
-  public static HandlerList getHandlerList() {
+  @Override
+  public @NotNull HandlerList getHandlers() {
     return HANDLER_LIST;
   }
 
-  @Override
-  public @NotNull HandlerList getHandlers() {
+  public static HandlerList getHandlerList() {
     return HANDLER_LIST;
   }
 

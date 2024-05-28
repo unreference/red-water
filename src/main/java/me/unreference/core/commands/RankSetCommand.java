@@ -9,12 +9,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RankSetCommand extends AbstractCommand {
 
   public RankSetCommand() {
-    super("set", "Rank>", null, "update");
+    super("set", "Rank>", "rank.command.set", "update");
   }
 
   @Override
@@ -48,11 +49,11 @@ public class RankSetCommand extends AbstractCommand {
     player.sendMessage(
       MessageUtil.getPrefixedMessage(
         getPrefix(),
-        "Your rank has been updated to &e%s&7.", rank.name()));
+        "Your rank has been updated to &e%s&7.", rank.getId().toUpperCase()));
     sender.sendMessage(
       MessageUtil.getPrefixedMessage(
         getPrefix(),
-        "Updated &e%s&7's rank to &e%s&7.", player.getName(), rank.name()));
+        "Updated &e%s&7's rank to &e%s&7.", player.getName(), rank.getId().toUpperCase()));
   }
 
   @Override

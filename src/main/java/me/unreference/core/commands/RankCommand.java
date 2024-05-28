@@ -35,11 +35,10 @@ public class RankCommand extends AbstractParameterizedCommand {
 
     RankManager rankManager = RankManager.getInstance();
     Rank rank = rankManager.getPlayerRank(player);
-    Component rankDisplay = Component.text().append(rank.getPrefixFormatting()).build();
     sender.sendMessage(
       MessageUtil.getPrefixedMessage(
         getPrefix(),
-        "&e%s&7's rank: &e%s", player.getName(), rank.name()));
+        "&e%s&7's rank: &e%s", player.getName(), rank.getId().toUpperCase()));
   }
 
   @Override

@@ -16,13 +16,15 @@ public enum Rank {
   LEGEND("legend", "&a&lLEGEND", NamedTextColor.YELLOW, HERO),
   TITAN("titan", "&c&lTITAN", NamedTextColor.YELLOW, LEGEND),
   ETERNAL("eternal", "&3&lETERNAL", NamedTextColor.YELLOW, TITAN),
+  IMMORTAL("immortal", "&e&lIMMORTAL", NamedTextColor.BLUE, ETERNAL),
 
-  TRAINEE("trainee", "&9&lTRAINEE", NamedTextColor.YELLOW, ETERNAL),
+  TRAINEE("trainee", "&6&lTRAINEE", NamedTextColor.YELLOW, IMMORTAL),
   MOD("mod", "&6&lMOD", NamedTextColor.YELLOW, TRAINEE),
-  SM("sm", "&6&lSR.MOD", NamedTextColor.YELLOW, MOD),
+  SM("srmod", "&6&lSR.MOD", NamedTextColor.YELLOW, MOD),
+
   ADMIN("admin", "&4&lADMIN", NamedTextColor.YELLOW, SM),
   DEV("dev", "&4&lDEV", NamedTextColor.YELLOW, ADMIN),
-  LT("lt", "&4&lLEADER", NamedTextColor.YELLOW, DEV),
+  LT("leader", "&4&lLEADER", NamedTextColor.YELLOW, DEV),
   OWNER("owner", "&4&lOWNER", NamedTextColor.YELLOW, LT);
 
   private final String RANK_ID;
