@@ -23,8 +23,8 @@ public final class Core extends JavaPlugin {
       Bukkit.getServer().getPluginManager().callEvent(new ServerTickEvent());
     }, 0L, 1L);
 
-    registerManager(new CommandManager());
     registerManager(new PlayerManager());
+    registerManager(new CommandManager());
     registerManager(new ChatManager());
     registerManager(new ScoreboardManager());
 
