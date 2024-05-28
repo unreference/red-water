@@ -58,5 +58,6 @@ public class RankResetCommand extends AbstractCommand {
 
   @Override
   protected void generatePermissions() {
+    Rank.ADMIN.grantPermission(getPermission(), true);
   }
 }

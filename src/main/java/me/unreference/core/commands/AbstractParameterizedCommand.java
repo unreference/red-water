@@ -1,11 +1,14 @@
 package me.unreference.core.commands;
 
+import me.unreference.core.managers.RankManager;
+import me.unreference.core.models.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class AbstractParameterizedCommand extends AbstractCommand {
   private final Map<String, Command> SUBCOMMANDS = new HashMap<>();
@@ -28,28 +31,38 @@ public abstract class AbstractParameterizedCommand extends AbstractCommand {
   @Override
   public void trigger(CommandSender sender, String[] args) {
     if (IS_PLAYER_REQUIRED) {
-      if (args.length > 1) {
-        String action = args[1].toLowerCase();
+      if (args.length == 0) {
+        execute(sender, args);
+        return;
+      } else if (args.length == 1) {
+        execute(sender, args);
+        return;
+      } else {
+        String action = args[1];
         Command subcommand = SUBCOMMANDS.get(action);
-
         if (subcommand != null) {
           subcommand.setAliasUsed(action);
           subcommand.setMainAliasUsed(getAliasUsed());
-          subcommand.trigger(sender, Arrays.copyOfRange(args, 0, args.length));
-          return;
+          if (isPermitted(sender, subcommand.getPermission())) {
+            subcommand.trigger(sender, Arrays.copyOfRange(args, 0, args.length));
+            return;
+          }
         }
       }
     } else {
-      if (args.length > 0) {
-        String action;
-        action = args[0].toLowerCase();
+      if (args.length == 0) {
+        execute(sender, args);
+        return;
+      } else {
+        String action = args[0];
         Command subcommand = SUBCOMMANDS.get(action);
-
         if (subcommand != null) {
           subcommand.setAliasUsed(action);
           subcommand.setMainAliasUsed(getAliasUsed());
-          subcommand.trigger(sender, Arrays.copyOfRange(args, 0, args.length));
-          return;
+          if (isPermitted(sender, subcommand.getPermission())) {
+            subcommand.trigger(sender, Arrays.copyOfRange(args, 1, args.length));
+            return;
+          }
         }
       }
     }
@@ -59,46 +72,42 @@ public abstract class AbstractParameterizedCommand extends AbstractCommand {
 
   @Override
   public List<String> tab(CommandSender sender, String alias, String[] args) {
-    List<String> suggestions = new ArrayList<>();
-
     if (IS_PLAYER_REQUIRED) {
-      if (args.length == 1) {
-        String currentArg = args[0];
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-          suggestions.add(onlinePlayer.getName());
+      switch (args.length) {
+        case 1 -> {
+          List<String> suggestions = new ArrayList<>(getOnlinePlayers());
+          String currentArg = args[0];
+          filterSuggestions(suggestions, currentArg);
+          return suggestions;
         }
-
-        suggestions.removeIf(suggestion -> !suggestion.toLowerCase().startsWith(currentArg.toLowerCase()));
-        return suggestions;
-
-      } else if (args.length == 2) {
-        suggestions.addAll(SUBCOMMANDS.keySet());
-        String currentArg = args[1];
-        suggestions.removeIf(suggestion -> !suggestion.toLowerCase().startsWith(currentArg.toLowerCase()));
-        return suggestions;
-
-      } else if (args.length > 2) {
-        Command subcommand = SUBCOMMANDS.get(args[1].toLowerCase());
-        if (subcommand != null) {
-          return subcommand.tab(sender, alias, Arrays.copyOfRange(args, 2, args.length));
+        case 2 -> {
+          List<String> suggestions = new ArrayList<>(getPermittedSubcommands(sender));
+          String currentArg = args[1];
+          filterSuggestions(suggestions, currentArg);
+          return suggestions;
+        }
+        default -> {
+          Command subcommand = SUBCOMMANDS.get(args[1]);
+          if (subcommand != null) {
+            return subcommand.tab(sender, alias, Arrays.copyOfRange(args, 2, args.length));
+          }
         }
       }
     } else {
       if (args.length == 1) {
-        suggestions.addAll(SUBCOMMANDS.keySet());
+        List<String> suggestions = new ArrayList<>(getPermittedSubcommands(sender));
         String currentArg = args[0];
-        suggestions.removeIf(suggestion -> !suggestion.toLowerCase().startsWith(currentArg.toLowerCase()));
+        filterSuggestions(suggestions, currentArg);
         return suggestions;
-
-      } else if (args.length > 1) {
-        Command subcommand = SUBCOMMANDS.get(args[0].toLowerCase());
+      } else {
+        Command subcommand = SUBCOMMANDS.get(args[0]);
         if (subcommand != null) {
-          return subcommand.tab(sender, alias, Arrays.copyOfRange(args, 1, args.length));
+          return subcommand.tab(sender, alias, Arrays.copyOfRange(args, 0, args.length));
         }
       }
     }
 
-    return List.of();
+    return Collections.emptyList();
   }
 
   @Override
@@ -111,6 +120,33 @@ public abstract class AbstractParameterizedCommand extends AbstractCommand {
   @Override
   public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
     return tab(sender, alias, args);
+  }
+
+  private boolean isPermitted(CommandSender sender, String permission) {
+    if (!(sender instanceof Player player)) {
+      return true;
+    }
+
+    RankManager rankManager = RankManager.getInstance();
+    Rank rank = rankManager.getPlayerRank(player);
+    return rank.isPermitted(permission);
+  }
+
+  private List<String> getOnlinePlayers() {
+    return Bukkit.getOnlinePlayers().stream()
+      .map(Player::getName)
+      .collect(Collectors.toList());
+  }
+
+  private void filterSuggestions(List<String> suggestions, String arg) {
+    suggestions.removeIf(suggestion -> !suggestion.toLowerCase().startsWith(arg.toLowerCase()));
+  }
+
+  private List<String> getPermittedSubcommands(CommandSender sender) {
+    return SUBCOMMANDS.entrySet().stream()
+      .filter(entry -> isPermitted(sender, entry.getValue().getPermission()))
+      .map(Map.Entry::getKey)
+      .collect(Collectors.toList());
   }
 
   protected void addSubcommand(Command subcommand) {

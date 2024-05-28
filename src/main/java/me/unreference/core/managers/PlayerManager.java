@@ -19,8 +19,8 @@ public class PlayerManager implements Listener {
         "&8%s", player.getName()));
   }
 
-  @EventHandler(priority = EventPriority.HIGH)
-  private void onPlayerJoin(PlayerJoinEvent event) {
+  @EventHandler
+  private static void onPlayerJoin(PlayerJoinEvent event) {
     Player player = event.getPlayer();
     RankManager rankManager = RankManager.getInstance();
 
