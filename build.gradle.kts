@@ -17,7 +17,7 @@ java {
 
 // 1)
 // For >=1.20.5 when you don't care about supporting spigot
-// paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
+paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
 // 2)
 // For 1.20.4 or below, or when you care about supporting Spigot on >=1.20.5
@@ -29,7 +29,7 @@ tasks.assemble {
  */
 
 dependencies {
-  paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
+  paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
   // paperweight.foliaDevBundle("1.20.6-R0.1-SNAPSHOT")
   // paperweight.devBundle("com.example.paperfork", "1.20.6-R0.1-SNAPSHOT")
 }
