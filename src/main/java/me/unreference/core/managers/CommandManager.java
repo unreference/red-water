@@ -1,6 +1,6 @@
 package me.unreference.core.managers;
 
-import me.unreference.core.commands.ChatCommand;
+import com.google.common.collect.Lists;
 import me.unreference.core.commands.RankCommand;
 import me.unreference.core.models.Rank;
 import org.bukkit.Bukkit;
@@ -12,11 +12,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerCommandSendEvent;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.*;
 
 public class CommandManager implements Listener {
   private static final String PERMISSION_BYPASS_BLOCKED_COMMANDS = "command.bypass-blocked-commands";
+  private static final List<String> BLOCKED_COMMANDS = Lists.newArrayList("plugins", "version");
 
   public CommandManager() {
     Rank.DEV.grantPermission(PERMISSION_BYPASS_BLOCKED_COMMANDS, true);
@@ -65,10 +65,26 @@ public class CommandManager implements Listener {
           allowedCommands.add(command.getName());
           allowedCommands.addAll(command.getAliases());
         }
+
+        if (rank.isPermitted(PERMISSION_BYPASS_BLOCKED_COMMANDS)) {
+          allowedCommands.addAll(getBlockedCommands());
+        }
       }
     }
 
     return allowedCommands;
+  }
+
+  private static List<String> getBlockedCommands() {
+    Set<String> blockedCommands = new HashSet<>(BLOCKED_COMMANDS);
+    CommandMap commandMap = Bukkit.getCommandMap();
+    for (Command command : commandMap.getKnownCommands().values()) {
+      if (blockedCommands.contains(command.getName())) {
+        blockedCommands.addAll(command.getAliases());
+      }
+    }
+
+    return new ArrayList<>(blockedCommands);
   }
 
   private static void addCommand(Command command) {
