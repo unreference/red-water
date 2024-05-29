@@ -21,7 +21,7 @@ public class ChatDelayEvent extends Event {
     return HANDLER_LIST;
   }
 
-  public int getDelayDuration() {
+  public int getDuration() {
     return CHAT_DELAY_DURATION;
   }
 }

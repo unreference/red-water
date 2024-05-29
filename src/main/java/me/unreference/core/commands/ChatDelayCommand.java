@@ -52,10 +52,10 @@ public class ChatDelayCommand extends AbstractCommand {
           return;
         }
 
-        sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
-          "Added a chat delay of &e%d &7%s.", duration, (duration > 1 ? "seconds" : "second")));
         Bukkit.getServer().getPluginManager().callEvent(new ChatDelayEvent(duration));
         IS_CHAT_DELAYED = true;
+        sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
+          "Delayed chat for &e%d &7%s.", duration, (duration > 1 ? "seconds" : "second")));
       } catch (NumberFormatException exception) {
         sender.sendMessage(getUsageMessage());
       }
@@ -70,7 +70,7 @@ public class ChatDelayCommand extends AbstractCommand {
   @Override
   protected Component getUsageMessage() {
     return MessageUtil.getPrefixedMessage(getPrefix(),
-      "/%s %s [<duration>]", getMainAliasUsed(), getAliasUsed());
+      "/%s %s [<seconds>]", getMainAliasUsed(), getAliasUsed());
   }
 
   @Override
