@@ -1,6 +1,7 @@
 package me.unreference.core.managers;
 
 import com.google.common.collect.Lists;
+import me.unreference.core.commands.ChatCommand;
 import me.unreference.core.commands.RankCommand;
 import me.unreference.core.models.Rank;
 import org.bukkit.Bukkit;
@@ -22,6 +23,7 @@ public class CommandManager implements Listener {
     Rank.DEV.grantPermission(PERMISSION_BYPASS_BLOCKED_COMMANDS, true);
 
     addCommand(new RankCommand());
+    addCommand(new ChatCommand());
   }
 
   @EventHandler

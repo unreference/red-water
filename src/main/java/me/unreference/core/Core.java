@@ -23,10 +23,10 @@ public final class Core extends JavaPlugin {
       Bukkit.getServer().getPluginManager().callEvent(new ServerTickEvent());
     }, 0L, 1L);
 
-    registerManager(new PlayerManager());
-    registerManager(new CommandManager());
-    registerManager(new ChatManager());
-    registerManager(new ScoreboardManager());
+    addManager(new PlayerManager());
+    addManager(new CommandManager());
+    addManager(new ChatManager());
+    addManager(new ScoreboardManager());
 
   }
 
@@ -35,7 +35,7 @@ public final class Core extends JavaPlugin {
     // Plugin shutdown logic
   }
 
-  private void registerManager(Listener listener) {
+  private void addManager(Listener listener) {
     this.getServer().getPluginManager().registerEvents(listener, this);
   }
 }
