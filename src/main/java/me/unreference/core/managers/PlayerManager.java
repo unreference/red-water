@@ -9,6 +9,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerManager implements Listener {
+  private static final String PERMISSION_AUTO_OP = "server.auto-op";
+
+  public PlayerManager() {
+    Rank.LT.grantPermission(PERMISSION_AUTO_OP, true);
+  }
 
   @EventHandler
   private static void onPlayerQuit(PlayerQuitEvent event) {
@@ -26,6 +31,8 @@ public class PlayerManager implements Listener {
     Rank rank = rankManager.getPlayerRank(player);
     if (rank == null) {
       rankManager.setPlayerRank(player, Rank.PLAYER);
+    } else {
+      player.setOp(rank.isPermitted(PERMISSION_AUTO_OP));
     }
 
     event.joinMessage(
