@@ -1,10 +1,11 @@
 package me.unreference.core.managers;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
-import me.unreference.core.commands.scheduler.ChatDelayTask;
 import me.unreference.core.events.ChatDelayEvent;
 import me.unreference.core.models.Rank;
+import me.unreference.core.scheduler.ChatDelayTask;
 import me.unreference.core.utils.FormatUtil;
+import me.unreference.core.utils.MessageUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -33,7 +34,7 @@ public class ChatManager implements Listener {
 
   @EventHandler
   private static void onChatDelay(ChatDelayEvent event) {
-    chatDelay = event.getDelayDuration();
+    chatDelay = event.getDuration();
   }
 
   private static Component getFormattedMessage(Component message, Rank rank) {
@@ -104,6 +105,8 @@ public class ChatManager implements Listener {
       long timeLeft = getTimeLeft(player);
       if (timeLeft > 0) {
         startOrUpdateDelayCountdown(player, (int) (timeLeft / 1000));
+        player.sendMessage(MessageUtil.getPrefixedMessage("Chat>",
+          "Delay mode is enabled. You can send one message every &e%d %s&7.", chatDelay, (chatDelay > 1 ? "seconds" : "second")));
       }
 
       return;
@@ -116,7 +119,7 @@ public class ChatManager implements Listener {
     Component finalMessage = Component.text()
       .append(rank.getPrefixFormatting())
       .append(player.displayName().colorIfAbsent(rank.getPlayerNameColor()))
-      .append(Component.text(" "))
+      .appendSpace()
       .append(formattedMessage)
       .build();
 

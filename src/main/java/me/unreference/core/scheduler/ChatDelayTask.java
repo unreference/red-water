@@ -2,7 +2,6 @@ package me.unreference.core.scheduler;
 
 import me.unreference.core.Core;
 import me.unreference.core.utils.FormatUtil;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,14 +18,14 @@ public class ChatDelayTask extends BukkitRunnable {
   @Override
   public void run() {
     if (countdown <= 0) {
-      PLAYER.sendActionBar(Component.empty());
       return;
     }
 
+    countdown -= 1;
+
     String formattedTime = FormatUtil.getFormattedTimeFromSeconds(countdown);
     PLAYER.sendActionBar(FormatUtil.getFormattedComponent(
-      "&7Shh... chat is delayed for &e%s&7.", formattedTime));
-    countdown -= 1;
+      "&7You can send a message in &e%s&7.", formattedTime));
   }
 
   public void start() {

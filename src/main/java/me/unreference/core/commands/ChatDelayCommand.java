@@ -27,35 +27,40 @@ public class ChatDelayCommand extends AbstractCommand {
     if (args.length == 0) {
       if (!IS_CHAT_DELAYED) {
         sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
-          "The chat does not currently have a delay."));
+          "Delay mode is not currently enabled."));
       } else {
         IS_CHAT_DELAYED = false;
         ChatManager.removeChatDelay();
         sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
-          "Removed the chat delay."));
+          "Delay mode is now disabled."));
       }
     } else {
       try {
-        if (IS_CHAT_DELAYED) {
-          IS_CHAT_DELAYED = false;
-          ChatManager.removeChatDelay();
-        }
-
         int duration = Integer.parseInt(args[0]);
 
-        duration = duration < 0 ? duration * -1 : duration;
+        duration = Math.abs(duration);
+
         if (duration == 0) {
-          IS_CHAT_DELAYED = false;
-          ChatManager.removeChatDelay();
-          sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
-            "Removed the chat delay."));
+          if (IS_CHAT_DELAYED) {
+            IS_CHAT_DELAYED = false;
+            ChatManager.removeChatDelay();
+            sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
+              "Delay mode is now disabled."));
+          } else {
+            sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
+              "Delay mode is not currently enabled."));
+          }
           return;
         }
 
-        Bukkit.getServer().getPluginManager().callEvent(new ChatDelayEvent(duration));
+        if (IS_CHAT_DELAYED) {
+          ChatManager.removeChatDelay();
+        }
+
         IS_CHAT_DELAYED = true;
         sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
-          "Delayed chat for &e%d &7%s.", duration, (duration > 1 ? "seconds" : "second")));
+          "Delay mode is now enabled. Players can send one message every &e%d %s&7.", duration, (duration > 1 ? "seconds" : "second")));
+        Bukkit.getServer().getPluginManager().callEvent(new ChatDelayEvent(duration));
       } catch (NumberFormatException exception) {
         sender.sendMessage(getUsageMessage());
       }

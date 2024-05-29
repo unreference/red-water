@@ -40,10 +40,10 @@ public class ChatCommand extends AbstractParameterizedCommand {
 
     if (rank == Rank.SM) {
       return message.append(MessageUtil.getPrefixedMessage(getPrefix(),
-        "/%s delay [<duration>]", getAliasUsed()));
+        "/%s delay [<seconds>]", getAliasUsed()));
     } else {
       return message.append(MessageUtil.getPrefixedMessage(getPrefix(),
-        "/%s (delay|lock) [<duration>]", getAliasUsed()));
+        "/%s (delay|lock) [<seconds>]", getAliasUsed()));
     }
   }
 }
