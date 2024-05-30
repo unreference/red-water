@@ -27,25 +27,21 @@ public class RankCommand extends AbstractParameterizedCommand {
     Player player = Bukkit.getPlayer(args[0]);
     if (player == null) {
       sender.sendMessage(
-        MessageUtil.getPrefixedMessage(
-          getPrefix(),
-          "Player not found: &e%s", args[0]));
+          MessageUtil.getPrefixedMessage(getPrefix(), "Player not found: &e%s", args[0]));
       return;
     }
 
     RankManager rankManager = RankManager.getInstance();
     Rank rank = rankManager.getPlayerRank(player);
     sender.sendMessage(
-      MessageUtil.getPrefixedMessage(
-        getPrefix(),
-        "&e%s&7's rank: &e%s", player.getName(), rank.getId().toUpperCase()));
+        MessageUtil.getPrefixedMessage(
+            getPrefix(), "&e%s&7's rank: &e%s", player.getName(), rank.getId().toUpperCase()));
   }
 
   @Override
   protected Component getUsageMessage() {
     return MessageUtil.getPrefixedMessage(
-      getPrefix(),
-      "/%s <player> [set|reset] [<rank>]", getAliasUsed());
+        getPrefix(), "/%s <player> [set|reset] [<rank>]", getAliasUsed());
   }
 
   @Override

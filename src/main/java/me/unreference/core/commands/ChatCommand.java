@@ -39,11 +39,12 @@ public class ChatCommand extends AbstractParameterizedCommand {
     Component message = Component.empty();
 
     if (rank == Rank.SM) {
-      return message.append(MessageUtil.getPrefixedMessage(getPrefix(),
-        "/%s delay [<seconds>]", getAliasUsed()));
+      return message.append(
+          MessageUtil.getPrefixedMessage(getPrefix(), "/%s delay [<seconds>]", getAliasUsed()));
     } else {
-      return message.append(MessageUtil.getPrefixedMessage(getPrefix(),
-        "/%s (delay|lock) [<seconds>]", getAliasUsed()));
+      return message.append(
+          MessageUtil.getPrefixedMessage(
+              getPrefix(), "/%s (delay|silence) [<seconds>]", getAliasUsed()));
     }
   }
 }

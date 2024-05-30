@@ -1,5 +1,6 @@
 package me.unreference.core.commands;
 
+import java.util.List;
 import me.unreference.core.managers.RankManager;
 import me.unreference.core.models.Rank;
 import me.unreference.core.utils.MessageUtil;
@@ -7,8 +8,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class RankResetCommand extends AbstractCommand {
 
@@ -26,22 +25,15 @@ public class RankResetCommand extends AbstractCommand {
     Player player = Bukkit.getPlayer(args[0]);
     if (player == null) {
       sender.sendMessage(
-        MessageUtil.getPrefixedMessage(
-          getPrefix(),
-          "Player not found: &e%s&7.", args[0]));
+          MessageUtil.getPrefixedMessage(getPrefix(), "Player not found: &e%s&7.", args[0]));
       return;
     }
 
     RankManager rankManager = RankManager.getInstance();
     rankManager.setPlayerRank(player, Rank.PLAYER);
-    player.sendMessage(
-      MessageUtil.getPrefixedMessage(
-        getPrefix(),
-        "Your rank has been reset."));
+    player.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(), "Your rank has been reset."));
     sender.sendMessage(
-      MessageUtil.getPrefixedMessage(
-        getPrefix(),
-        "Reset &e%s&7's rank.", player.getName()));
+        MessageUtil.getPrefixedMessage(getPrefix(), "Reset &e%s&7's rank.", player.getName()));
   }
 
   @Override
@@ -52,8 +44,7 @@ public class RankResetCommand extends AbstractCommand {
   @Override
   protected Component getUsageMessage() {
     return MessageUtil.getPrefixedMessage(
-      getPrefix(),
-      "/%s <player> %s", getMainAliasUsed(), getAliasUsed());
+        getPrefix(), "/%s <player> %s", getMainAliasUsed(), getAliasUsed());
   }
 
   @Override

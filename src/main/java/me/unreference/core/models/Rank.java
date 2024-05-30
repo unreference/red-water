@@ -1,13 +1,12 @@
 package me.unreference.core.models;
 
-import me.unreference.core.utils.FormatUtil;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import me.unreference.core.utils.FormatUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public enum Rank {
   PLAYER("player", null, NamedTextColor.YELLOW),

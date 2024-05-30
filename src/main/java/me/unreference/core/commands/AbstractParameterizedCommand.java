@@ -1,5 +1,7 @@
 package me.unreference.core.commands;
 
+import java.util.*;
+import java.util.stream.Collectors;
 import me.unreference.core.managers.RankManager;
 import me.unreference.core.models.Rank;
 import org.bukkit.Bukkit;
@@ -7,21 +9,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 public abstract class AbstractParameterizedCommand extends AbstractCommand {
   private final Map<String, Command> SUBCOMMANDS = new HashMap<>();
   private final boolean IS_PLAYER_REQUIRED;
 
-  public AbstractParameterizedCommand(String name, String prefix, String permission, boolean isPlayerRequired, String... aliases) {
+  public AbstractParameterizedCommand(
+      String name, String prefix, String permission, boolean isPlayerRequired, String... aliases) {
     super(name, prefix, permission, aliases);
     this.IS_PLAYER_REQUIRED = isPlayerRequired;
 
     generatePermissions();
   }
 
-  public AbstractParameterizedCommand(String name, String prefix, String permission, String... aliases) {
+  public AbstractParameterizedCommand(
+      String name, String prefix, String permission, String... aliases) {
     super(name, prefix, permission, aliases);
     this.IS_PLAYER_REQUIRED = false;
 
@@ -111,14 +112,16 @@ public abstract class AbstractParameterizedCommand extends AbstractCommand {
   }
 
   @Override
-  public boolean execute(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+  public boolean execute(
+      @NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
     setAliasUsed(alias);
     trigger(sender, args);
     return true;
   }
 
   @Override
-  public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+  public @NotNull List<String> tabComplete(
+      @NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
     return tab(sender, alias, args);
   }
 
@@ -133,9 +136,7 @@ public abstract class AbstractParameterizedCommand extends AbstractCommand {
   }
 
   private List<String> getOnlinePlayers() {
-    return Bukkit.getOnlinePlayers().stream()
-      .map(Player::getName)
-      .collect(Collectors.toList());
+    return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
   }
 
   private void filterSuggestions(List<String> suggestions, String arg) {
@@ -144,9 +145,9 @@ public abstract class AbstractParameterizedCommand extends AbstractCommand {
 
   private List<String> getPermittedSubcommands(CommandSender sender) {
     return SUBCOMMANDS.entrySet().stream()
-      .filter(entry -> isPermitted(sender, entry.getValue().getPermission()))
-      .map(Map.Entry::getKey)
-      .collect(Collectors.toList());
+        .filter(entry -> isPermitted(sender, entry.getValue().getPermission()))
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toList());
   }
 
   protected void addSubcommand(Command subcommand) {
@@ -158,4 +159,3 @@ public abstract class AbstractParameterizedCommand extends AbstractCommand {
 
   protected abstract void execute(CommandSender sender, String[] args);
 }
-

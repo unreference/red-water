@@ -1,6 +1,9 @@
 package me.unreference.core.managers;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import me.unreference.core.events.ChatDelayEvent;
 import me.unreference.core.models.Rank;
 import me.unreference.core.scheduler.ChatDelayTask;
@@ -11,10 +14,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class ChatManager implements Listener {
   private static final String PERMISSION_CHAT_DELAY_BYPASS = "chat.delay-bypass";
@@ -62,7 +61,6 @@ public class ChatManager implements Listener {
       return true;
     }
 
-
     UUID playerUuid = player.getUniqueId();
     long currentTime = System.currentTimeMillis();
 
@@ -105,8 +103,12 @@ public class ChatManager implements Listener {
       long timeLeft = getTimeLeft(player);
       if (timeLeft > 0) {
         startOrUpdateDelayCountdown(player, (int) (timeLeft / 1000));
-        player.sendMessage(MessageUtil.getPrefixedMessage("Chat>",
-          "Delay mode is enabled. You can send one message every &e%d %s&7.", chatDelay, (chatDelay > 1 ? "seconds" : "second")));
+        player.sendMessage(
+            MessageUtil.getPrefixedMessage(
+                "Chat>",
+                "Delay mode is &eenabled&7. You can send one message every &e%d %s&7.",
+                chatDelay,
+                (chatDelay > 1 ? "seconds" : "second")));
       }
 
       return;
@@ -116,12 +118,13 @@ public class ChatManager implements Listener {
     Rank rank = rankManager.getPlayerRank(player);
     Component formattedMessage = getFormattedMessage(event.message(), rank);
 
-    Component finalMessage = Component.text()
-      .append(rank.getPrefixFormatting())
-      .append(player.displayName().colorIfAbsent(rank.getPlayerNameColor()))
-      .appendSpace()
-      .append(formattedMessage)
-      .build();
+    Component finalMessage =
+        Component.text()
+            .append(rank.getPrefixFormatting())
+            .append(player.displayName().colorIfAbsent(rank.getPlayerNameColor()))
+            .appendSpace()
+            .append(formattedMessage)
+            .build();
 
     Bukkit.broadcast(finalMessage);
     PLAYER_LAST_MESSAGE_TIMES.put(player.getUniqueId(), System.currentTimeMillis());

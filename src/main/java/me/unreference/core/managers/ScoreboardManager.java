@@ -1,5 +1,8 @@
 package me.unreference.core.managers;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import me.unreference.core.events.RankChangeEvent;
 import me.unreference.core.events.ServerTickEvent;
 import me.unreference.core.models.Rank;
@@ -13,10 +16,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Team;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class ScoreboardManager implements Listener {
   private static final Map<UUID, Scoreboard> SCOREBOARD_PLAYERS = new HashMap<>();

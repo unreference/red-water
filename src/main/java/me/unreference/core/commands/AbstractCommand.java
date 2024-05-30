@@ -1,21 +1,20 @@
 package me.unreference.core.commands;
 
+import java.util.Arrays;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.List;
-
-public abstract class AbstractCommand extends Command implements me.unreference.core.commands.Command {
+public abstract class AbstractCommand extends Command
+    implements me.unreference.core.commands.Command {
   private final String COMMAND_NAME;
   private final String COMMAND_PREFIX;
   private final String COMMAND_PERMISSION;
   private final List<String> COMMAND_ALIASES;
   protected String aliasUsed;
   protected String mainAliasUsed;
-
 
   public AbstractCommand(String name, String prefix, String permission, String... aliases) {
     super(name);
@@ -32,8 +31,8 @@ public abstract class AbstractCommand extends Command implements me.unreference.
   public abstract void trigger(CommandSender sender, String[] args);
 
   @Override
-  public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias,
-                                           @NotNull String[] args) {
+  public @NotNull List<String> tabComplete(
+      @NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
     return tab(sender, alias, args);
   }
 
@@ -41,7 +40,8 @@ public abstract class AbstractCommand extends Command implements me.unreference.
   public abstract List<String> tab(CommandSender sender, String alias, String[] args);
 
   @Override
-  public boolean execute(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+  public boolean execute(
+      @NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
     setAliasUsed(alias);
     trigger(sender, args);
     return true;

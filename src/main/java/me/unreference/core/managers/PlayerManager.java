@@ -1,5 +1,6 @@
 package me.unreference.core.managers;
 
+import me.unreference.core.events.RankChangeEvent;
 import me.unreference.core.models.Rank;
 import me.unreference.core.utils.MessageUtil;
 import org.bukkit.entity.Player;
@@ -16,11 +17,17 @@ public class PlayerManager implements Listener {
   }
 
   @EventHandler
+  private static void onRankChange(RankChangeEvent event) {
+    RankManager rankManager = RankManager.getInstance();
+    Player player = event.getPlayer();
+    Rank rank = rankManager.getPlayerRank(player);
+    player.setOp(rank.isPermitted(PERMISSION_AUTO_OP));
+  }
+
+  @EventHandler
   private static void onPlayerQuit(PlayerQuitEvent event) {
     Player player = event.getPlayer();
-    event.quitMessage(
-      MessageUtil.getPrefixedMessage("&8Quit>",
-        "&8%s", player.getName()));
+    event.quitMessage(MessageUtil.getPrefixedMessage("&8Quit>", "&8%s", player.getName()));
   }
 
   @EventHandler
@@ -35,8 +42,6 @@ public class PlayerManager implements Listener {
       player.setOp(rank.isPermitted(PERMISSION_AUTO_OP));
     }
 
-    event.joinMessage(
-      MessageUtil.getPrefixedMessage("&8Join>",
-        "&8%s", player.getName()));
+    event.joinMessage(MessageUtil.getPrefixedMessage("&8Join>", "&8%s", player.getName()));
   }
 }

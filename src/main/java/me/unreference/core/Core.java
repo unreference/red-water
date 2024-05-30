@@ -19,15 +19,19 @@ public final class Core extends JavaPlugin {
   @Override
   public void onEnable() {
 
-    Bukkit.getScheduler().runTaskTimer(this, () -> {
-      Bukkit.getServer().getPluginManager().callEvent(new ServerTickEvent());
-    }, 0L, 1L);
+    Bukkit.getScheduler()
+        .runTaskTimer(
+            this,
+            () -> {
+              Bukkit.getServer().getPluginManager().callEvent(new ServerTickEvent());
+            },
+            0L,
+            1L);
 
     addManager(new PlayerManager());
     addManager(new CommandManager());
     addManager(new ChatManager());
     addManager(new ScoreboardManager());
-
   }
 
   @Override

@@ -10,5 +10,4 @@ public class RankPermission {
   public boolean isInheritable() {
     return RANK_PERMISSION_IS_INHERITABLE;
   }
-
 }

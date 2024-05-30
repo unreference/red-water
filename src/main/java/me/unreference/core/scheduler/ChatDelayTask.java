@@ -24,8 +24,8 @@ public class ChatDelayTask extends BukkitRunnable {
     countdown -= 1;
 
     String formattedTime = FormatUtil.getFormattedTimeFromSeconds(countdown);
-    PLAYER.sendActionBar(FormatUtil.getFormattedComponent(
-      "&7You can send a message in &e%s&7.", formattedTime));
+    PLAYER.sendActionBar(
+        FormatUtil.getFormattedComponent("&7You can send a message in &e%s&7.", formattedTime));
   }
 
   public void start() {

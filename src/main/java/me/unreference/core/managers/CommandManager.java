@@ -1,6 +1,7 @@
 package me.unreference.core.managers;
 
 import com.google.common.collect.Lists;
+import java.util.*;
 import me.unreference.core.commands.ChatCommand;
 import me.unreference.core.commands.RankCommand;
 import me.unreference.core.models.Rank;
@@ -13,10 +14,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerCommandSendEvent;
 
-import java.util.*;
-
 public class CommandManager implements Listener {
-  private static final String PERMISSION_BYPASS_BLOCKED_COMMANDS = "command.bypass-blocked-commands";
+  private static final String PERMISSION_BYPASS_BLOCKED_COMMANDS =
+      "command.bypass-blocked-commands";
   private static final List<String> BLOCKED_COMMANDS = Lists.newArrayList("plugins", "version");
 
   public CommandManager() {
@@ -93,5 +93,3 @@ public class CommandManager implements Listener {
     Bukkit.getServer().getCommandMap().register(command.getName(), command);
   }
 }
-
-

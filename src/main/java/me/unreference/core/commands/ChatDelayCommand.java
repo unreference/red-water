@@ -1,5 +1,6 @@
 package me.unreference.core.commands;
 
+import java.util.List;
 import me.unreference.core.events.ChatDelayEvent;
 import me.unreference.core.managers.ChatManager;
 import me.unreference.core.models.Rank;
@@ -7,8 +8,6 @@ import me.unreference.core.utils.MessageUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-
-import java.util.List;
 
 public class ChatDelayCommand extends AbstractCommand {
   private static boolean IS_CHAT_DELAYED = false;
@@ -26,13 +25,13 @@ public class ChatDelayCommand extends AbstractCommand {
 
     if (args.length == 0) {
       if (!IS_CHAT_DELAYED) {
-        sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
-          "Delay mode is not currently enabled."));
+        sender.sendMessage(
+            MessageUtil.getPrefixedMessage(getPrefix(), "Delay mode is not currently enabled."));
       } else {
         IS_CHAT_DELAYED = false;
         ChatManager.removeChatDelay();
-        sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
-          "Delay mode is now disabled."));
+        sender.sendMessage(
+            MessageUtil.getPrefixedMessage(getPrefix(), "Delay mode is now &edisabled&7."));
       }
     } else {
       try {
@@ -44,11 +43,12 @@ public class ChatDelayCommand extends AbstractCommand {
           if (IS_CHAT_DELAYED) {
             IS_CHAT_DELAYED = false;
             ChatManager.removeChatDelay();
-            sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
-              "Delay mode is now disabled."));
+            sender.sendMessage(
+                MessageUtil.getPrefixedMessage(getPrefix(), "Delay mode is now &edisabled&7."));
           } else {
-            sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
-              "Delay mode is not currently enabled."));
+            sender.sendMessage(
+                MessageUtil.getPrefixedMessage(
+                    getPrefix(), "Delay mode is not currently enabled."));
           }
           return;
         }
@@ -58,8 +58,12 @@ public class ChatDelayCommand extends AbstractCommand {
         }
 
         IS_CHAT_DELAYED = true;
-        sender.sendMessage(MessageUtil.getPrefixedMessage(getPrefix(),
-          "Delay mode is now enabled. Players can send one message every &e%d %s&7.", duration, (duration > 1 ? "seconds" : "second")));
+        sender.sendMessage(
+            MessageUtil.getPrefixedMessage(
+                getPrefix(),
+                "Delay mode is now &eenabled&7. Players can send one message every &e%d %s&7.",
+                duration,
+                (duration > 1 ? "seconds" : "second")));
         Bukkit.getServer().getPluginManager().callEvent(new ChatDelayEvent(duration));
       } catch (NumberFormatException exception) {
         sender.sendMessage(getUsageMessage());
@@ -74,8 +78,8 @@ public class ChatDelayCommand extends AbstractCommand {
 
   @Override
   protected Component getUsageMessage() {
-    return MessageUtil.getPrefixedMessage(getPrefix(),
-      "/%s %s [<seconds>]", getMainAliasUsed(), getAliasUsed());
+    return MessageUtil.getPrefixedMessage(
+        getPrefix(), "/%s %s [<seconds>]", getMainAliasUsed(), getAliasUsed());
   }
 
   @Override
