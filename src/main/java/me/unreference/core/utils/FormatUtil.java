@@ -152,7 +152,6 @@ public class FormatUtil {
         builder.append(Component.text(content.substring(lastEnd, matcher.start()), currentStyle));
 
         String match = matcher.group();
-        ;
         TextColor hexColor = TextColor.fromHexString(match);
         currentStyle = currentStyle.color(hexColor);
 

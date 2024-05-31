@@ -3,6 +3,7 @@ package me.unreference.core.managers;
 import com.google.common.collect.Lists;
 import java.util.*;
 import me.unreference.core.commands.ChatCommand;
+import me.unreference.core.commands.GiveCommand;
 import me.unreference.core.commands.RankCommand;
 import me.unreference.core.models.Rank;
 import org.bukkit.Bukkit;
@@ -24,6 +25,7 @@ public class CommandManager implements Listener {
 
     addCommand(new RankCommand());
     addCommand(new ChatCommand());
+    addCommand(new GiveCommand());
   }
 
   @EventHandler
