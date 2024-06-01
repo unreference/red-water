@@ -4,13 +4,13 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import me.unreference.core.Core;
 import me.unreference.core.events.ChatDelayEvent;
 import me.unreference.core.models.Rank;
 import me.unreference.core.scheduler.ChatDelayTask;
 import me.unreference.core.utils.FormatUtil;
 import me.unreference.core.utils.MessageUtil;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -103,12 +103,6 @@ public class ChatManager implements Listener {
       long timeLeft = getTimeLeft(player);
       if (timeLeft > 0) {
         startOrUpdateDelayCountdown(player, (int) (timeLeft / 1000));
-        player.sendMessage(
-            MessageUtil.getPrefixedMessage(
-                "Chat>",
-                "Delay mode is &eenabled&7. You can send one message every &e%d %s&7.",
-                chatDelay,
-                (chatDelay > 1 ? "seconds" : "second")));
       }
 
       return;
@@ -126,7 +120,7 @@ public class ChatManager implements Listener {
             .append(formattedMessage)
             .build();
 
-    Bukkit.broadcast(finalMessage);
+    MessageUtil.broadcastMessage(finalMessage);
     PLAYER_LAST_MESSAGE_TIMES.put(player.getUniqueId(), System.currentTimeMillis());
   }
 
@@ -134,12 +128,14 @@ public class ChatManager implements Listener {
     UUID playerUuid = player.getUniqueId();
 
     ChatDelayTask existingTask = PLAYER_COUNTDOWN_TASKS.get(playerUuid);
-    if (existingTask != null) {
-      existingTask.update(delay);
-    } else {
-      ChatDelayTask newTask = new ChatDelayTask(player, delay);
-      newTask.start();
-      PLAYER_COUNTDOWN_TASKS.put(playerUuid, newTask);
+
+    if (existingTask != null && existingTask.getCountdown() == 0) {
+      PLAYER_COUNTDOWN_TASKS.remove(playerUuid);
+      return;
     }
+
+    ChatDelayTask newTask = new ChatDelayTask(Core.getPlugin(), player, delay);
+    newTask.start();
+    PLAYER_COUNTDOWN_TASKS.put(playerUuid, newTask);
   }
 }

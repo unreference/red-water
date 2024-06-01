@@ -28,47 +28,48 @@ public class ChatDelayCommand extends AbstractCommand {
         sender.sendMessage(
             MessageUtil.getPrefixedMessage(getPrefix(), "Delay mode is not currently enabled."));
       } else {
-        IS_CHAT_DELAYED = false;
-        ChatManager.removeChatDelay();
-        sender.sendMessage(
-            MessageUtil.getPrefixedMessage(getPrefix(), "Delay mode is now &edisabled&7."));
+        disableChatDelay(sender);
       }
-    } else {
-      try {
-        int duration = Integer.parseInt(args[0]);
-
-        duration = Math.abs(duration);
-
-        if (duration == 0) {
-          if (IS_CHAT_DELAYED) {
-            IS_CHAT_DELAYED = false;
-            ChatManager.removeChatDelay();
-            sender.sendMessage(
-                MessageUtil.getPrefixedMessage(getPrefix(), "Delay mode is now &edisabled&7."));
-          } else {
-            sender.sendMessage(
-                MessageUtil.getPrefixedMessage(
-                    getPrefix(), "Delay mode is not currently enabled."));
-          }
-          return;
-        }
-
-        if (IS_CHAT_DELAYED) {
-          ChatManager.removeChatDelay();
-        }
-
-        IS_CHAT_DELAYED = true;
-        sender.sendMessage(
-            MessageUtil.getPrefixedMessage(
-                getPrefix(),
-                "Delay mode is now &eenabled&7. Players can send one message every &e%d %s&7.",
-                duration,
-                (duration > 1 ? "seconds" : "second")));
-        Bukkit.getServer().getPluginManager().callEvent(new ChatDelayEvent(duration));
-      } catch (NumberFormatException exception) {
-        sender.sendMessage(getUsageMessage());
-      }
+      return;
     }
+
+    try {
+      int duration = Math.abs(Integer.parseInt(args[0]));
+
+      if (duration == 0) {
+        if (IS_CHAT_DELAYED) {
+          disableChatDelay(sender);
+        } else {
+          sender.sendMessage(
+              MessageUtil.getPrefixedMessage(getPrefix(), "Delay mode is not currently enabled."));
+        }
+        return;
+      }
+
+      if (IS_CHAT_DELAYED) {
+        ChatManager.removeChatDelay();
+      }
+
+      IS_CHAT_DELAYED = true;
+      sender.sendMessage(
+          MessageUtil.getPrefixedMessage(
+              getPrefix(),
+              "Delay mode is now &eenabled&7. Players can send one message every &e%d %s&7.",
+              duration,
+              (duration > 1 ? "seconds" : "second")));
+
+      Bukkit.getServer().getPluginManager().callEvent(new ChatDelayEvent(duration));
+
+    } catch (NumberFormatException exception) {
+      sender.sendMessage(getUsageMessage());
+    }
+  }
+
+  private void disableChatDelay(CommandSender sender) {
+    IS_CHAT_DELAYED = false;
+    ChatManager.removeChatDelay();
+    sender.sendMessage(
+        MessageUtil.getPrefixedMessage(getPrefix(), "Delay mode is now &edisabled&7."));
   }
 
   @Override

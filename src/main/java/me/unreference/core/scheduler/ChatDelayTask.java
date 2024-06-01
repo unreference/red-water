@@ -1,22 +1,30 @@
 package me.unreference.core.scheduler;
 
-import me.unreference.core.Core;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import me.unreference.core.utils.FormatUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.plugin.Plugin;
 
-public class ChatDelayTask extends BukkitRunnable {
+public class ChatDelayTask {
   private final Player PLAYER;
+  private final Plugin PLUGIN;
 
   private int countdown;
+  private ScheduledTask scheduledTask;
 
-  public ChatDelayTask(Player player, int countdown) {
+  public ChatDelayTask(Plugin plugin, Player player, int countdown) {
+    this.PLUGIN = plugin;
     this.PLAYER = player;
     this.countdown = countdown;
   }
 
-  @Override
-  public void run() {
+  public void start() {
+    scheduledTask =
+        Bukkit.getGlobalRegionScheduler().runAtFixedRate(PLUGIN, task -> run(), 1L, 20L);
+  }
+
+  private void run() {
     if (countdown <= 0) {
       return;
     }
@@ -25,14 +33,17 @@ public class ChatDelayTask extends BukkitRunnable {
 
     String formattedTime = FormatUtil.getFormattedTimeFromSeconds(countdown);
     PLAYER.sendActionBar(
-        FormatUtil.getFormattedComponent("&7You can send a message in &e%s&7.", formattedTime));
+        FormatUtil.getFormattedComponent(
+            "&7Shh... You can send a message in &e%s&7.", formattedTime));
   }
 
-  public void start() {
-    runTaskTimerAsynchronously(Core.getPlugin(), 0, 20);
+  public void cancel() {
+    if (scheduledTask != null && !scheduledTask.isCancelled()) {
+      scheduledTask.cancel();
+    }
   }
 
-  public void update(int countdown) {
-    this.countdown = countdown;
+  public int getCountdown() {
+    return countdown;
   }
 }
